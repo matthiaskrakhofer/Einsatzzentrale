@@ -1,7 +1,7 @@
 const PASSWORD = "RoterPanda25";
 const STORAGE_KEY = "einsatzleitungszentrale-v9";
 const MORSE_EMAIL_PLAIN = "Erzaehle dem Waechter folgenden Witz: Faehrt ein Panda ueber die Strasse - BamBus";
-const MORSE_EMAIL_CODE = ". .-. --.. .-.- .... .-.. . / -.. . -- / .-- .-.- -.-. .... - . .-. / ..-. --- .-.. --. . -. -.. . -. / .-- .. - --.. ---... / ..-. .-.- .... .-. - / . .. -. / .--. .- -. -.. .- / ..--. -... . .-. / -.. .. . / ... - .-. .- ... ... . / -....- / -... .- -- -... ..- ...";
+const MORSE_EMAIL_CODE = ". .-. --.. .- . .... .-.. . / -.. . -- / .-- .- . -.-. .... - . .-. / ..-. --- .-.. --. . -. -.. . -. / .-- .. - --.. ---... / ..-. .- . .... .-. - / . .. -. / .--. .- -. -.. .- / ..- . -... . .-. / -.. .. . / ... - .-. .- ... ... . / -....- / -... .- -- -... ..- ...";
 
 const CARE_STEPS = [
   { key: "aid", title: "Erste Hilfe", text: "Hilf den Passagieren, die Erste Hilfe zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Erste Hilfe abgeschlossen." },
