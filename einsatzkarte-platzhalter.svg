@@ -1,0 +1,18 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="36" fill="#0B1823"/>
+  <rect x="24" y="24" width="1152" height="752" rx="24" fill="#102534" stroke="#1C465E" stroke-width="4"/>
+  <path d="M90 620C175 510 225 500 310 560C398 620 445 610 520 500C590 395 645 388 732 450C840 527 925 530 1110 360" stroke="#66CFFF" stroke-width="14" stroke-linecap="round"/>
+  <path d="M110 190C184 150 250 160 320 220C385 277 447 284 520 230C620 156 710 160 805 240C877 299 945 309 1080 250" stroke="#1D3E54" stroke-width="36" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="260" cy="524" r="26" fill="#89F7AD"/>
+  <circle cx="590" cy="470" r="26" fill="#FFDC7A"/>
+  <circle cx="930" cy="420" r="26" fill="#57D8FF"/>
+  <path d="M252 524H268" stroke="#07131F" stroke-width="6" stroke-linecap="round"/>
+  <path d="M260 516V532" stroke="#07131F" stroke-width="6" stroke-linecap="round"/>
+  <path d="M582 470H598" stroke="#07131F" stroke-width="6" stroke-linecap="round"/>
+  <path d="M930 412V428" stroke="#07131F" stroke-width="6" stroke-linecap="round"/>
+  <path d="M922 420H938" stroke="#07131F" stroke-width="6" stroke-linecap="round"/>
+  <rect x="80" y="72" width="340" height="132" rx="18" fill="#0D2231" stroke="#1C465E" stroke-width="3"/>
+  <text x="112" y="120" fill="#EFF6FB" font-family="Arial, sans-serif" font-size="34" font-weight="700">Karten-Platzhalter</text>
+  <text x="112" y="164" fill="#9AB4C8" font-family="Arial, sans-serif" font-size="24">Ersetze diese Datei spaeter mit deiner</text>
+  <text x="112" y="196" fill="#9AB4C8" font-family="Arial, sans-serif" font-size="24">hochgeladenen Einsatzkarte.</text>
+</svg>

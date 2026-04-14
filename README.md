@@ -29,3 +29,17 @@ Bei einem Projektrepository ist die Adresse normalerweise:
 ## Lokal starten
 
 Einfach `index.html` im Browser oeffnen.
+
+## Einsatzkarte ersetzen
+
+Aktuell nutzt die Mission diese Datei:
+
+`assets/einsatzkarte-mission.svg`
+
+Die zugrunde liegende PDF und PNG liegen hier:
+
+`assets/Karte_Harrachpark1.pdf`
+
+`assets/Karte_Harrachpark1.png`
+
+Wenn du spaeter andere Punkte, Wege oder Symbole willst, kann `assets/einsatzkarte-mission.svg` direkt angepasst werden.

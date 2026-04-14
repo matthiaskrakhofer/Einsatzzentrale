@@ -13,34 +13,74 @@
   <div class="background-glow background-glow-left"></div>
   <div class="background-glow background-glow-right"></div>
 
-  <main class="dashboard">
+  <div id="lockScreen" class="overlay-screen">
+    <section class="overlay-panel">
+      <p class="eyebrow">Geschuetzter Zugriff</p>
+      <h1>Einsatzleitungszentrale</h1>
+      <p class="overlay-text">
+        Der Zugang ist verschluesselt. Gib das Einsatzpasswort ein, um die Leitstelle zu oeffnen.
+      </p>
+      <form id="passwordForm" class="overlay-form">
+        <label>
+          <span>Passwort</span>
+          <input id="passwordInput" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="solve-button">Zugang freischalten</button>
+      </form>
+      <p id="passwordFeedback" class="task-feedback" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <main id="app" class="dashboard hidden">
     <section class="hero">
       <p class="eyebrow">Notfallprotokoll Alpha-7</p>
       <h1>Einsatzleitungszentrale</h1>
       <p class="hero-text">
-        Ein Passagierflugzeug ist in einem abgelegenen Gebirge abgestürzt. Das Rettungsteam kann nur weiter
-        vorrücken, wenn jede Leitstellen-Aufgabe gelöst wird. Mit jedem gelösten Rätsel wird der nächste
-        Einsatzabschnitt freigeschaltet, bis alle Überlebenden gerettet sind.
+        Nach einem Flugzeugabsturz im gefaehrlichen Harrach-Wald koordiniert die Leitstelle die Rueckkehr aller
+        Passagiere zur Rettungsstation. Zuerst muessen die noetigen Hilfsgueter gesichert werden. Mit dem Pilot
+        an Bord kann die Einsatzzentrale waehrend der gesamten Mission Funkkontakt halten.
       </p>
+
+      <div id="setupPanel" class="setup-panel">
+        <div>
+          <p class="eyebrow">Missionsstart</p>
+          <h2>Passagierzahl erfassen</h2>
+          <p class="hero-text setup-text">
+            Trage ein, wie viele Personen beim Absturz an Bord waren. Alle Anzeigen und Missionsmeldungen werden
+            automatisch auf diese Anzahl angepasst.
+          </p>
+        </div>
+        <form id="setupForm" class="overlay-form inline-form">
+          <label>
+            <span>Anzahl abgestuerzter Personen</span>
+            <input id="passengerInput" type="number" min="1" max="999" required>
+          </label>
+          <button type="submit" class="solve-button">Mission starten</button>
+        </form>
+      </div>
 
       <div class="status-grid">
         <article class="status-card">
-          <span class="status-label">Gerettete Personen</span>
-          <strong id="rescuedCount">0 / 24</strong>
+          <span class="status-label">Abgestuerzte Personen</span>
+          <strong id="totalPassengers">Noch nicht erfasst</strong>
         </article>
         <article class="status-card">
-          <span class="status-label">Freigeschaltete Einsätze</span>
-          <strong id="unlockedCount">1 / 4</strong>
+          <span class="status-label">Versorgte Personen</span>
+          <strong id="suppliedPassengers">0</strong>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Auf dem Weg zur Basis</span>
+          <strong id="returningPassengers">0</strong>
         </article>
         <article class="status-card">
           <span class="status-label">Missionstatus</span>
-          <strong id="missionStatus">Lage wird ausgewertet</strong>
+          <strong id="missionStatus">Warte auf Missionsstart</strong>
         </article>
       </div>
 
       <div class="progress-block">
         <div class="progress-meta">
-          <span>Rettungsfortschritt</span>
+          <span>Rueckfuehrung zur Rettungsbasis</span>
           <span id="progressLabel">0%</span>
         </div>
         <div class="progress-bar">
@@ -52,36 +92,243 @@
     <section class="mission-panel">
       <div class="mission-header">
         <div>
-          <p class="eyebrow">Einsatzabschnitte</p>
-          <h2>Rätsel und Freischaltungen</h2>
+          <p class="eyebrow">Mission</p>
+          <h2>Passagiere durch den Harrach-Wald fuehren</h2>
         </div>
-        <button id="resetButton" class="ghost-button" type="button">Fortschritt zurücksetzen</button>
+        <button id="resetButton" class="ghost-button" type="button">Mission zuruecksetzen</button>
       </div>
 
-      <div id="taskList" class="task-list"></div>
+      <div id="missionLocked" class="mission-locked">
+        Erst die Passagierzahl eingeben, dann kann die Mission gestartet werden.
+      </div>
+
+      <div id="missionContent" class="task-list hidden">
+        <article class="task-card storm-card">
+          <div class="task-topline">
+            <span class="task-badge">Lagebild</span>
+            <span id="stormState" class="task-state">Sturm wird beobachtet</span>
+          </div>
+          <h3 class="task-title">Sturm und Standort des Geraets</h3>
+          <p class="task-story">
+            Eine Person in der Gruppe teilt ihren Standort. Die Einsatzleitung muss den Sturm permanent im Blick
+            behalten, damit die Passagiere ihm ausweichen koennen.
+          </p>
+
+          <div class="task-clue">
+            <strong>Live-Lage:</strong>
+            <span id="stormLog">
+              Noch kein Standort eingebettet. Du kannst spaeter einen Karten- oder Geraetelink eintragen.
+            </span>
+          </div>
+
+          <form id="stormForm" class="overlay-form inline-form">
+            <label>
+              <span>Einbettungslink fuer Standort oder Karte</span>
+              <input id="stormEmbedInput" type="url" placeholder="https://...">
+            </label>
+            <button type="submit" class="solve-button">Standort speichern</button>
+          </form>
+
+          <div class="map-panel">
+            <div class="map-copy">
+              <strong>Sturmhinweis</strong>
+              <p>
+                Halte die Route der Passagiere immer vom Sturm weg. Dieser Bereich kann spaeter mit einem echten
+                eingebetteten Geraetestandort oder Kartenlink befuellt werden.
+              </p>
+            </div>
+            <iframe
+              id="stormEmbed"
+              class="mission-map hidden"
+              title="Eingebetteter Standort des Geraets"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <img
+              id="stormPlaceholder"
+              class="mission-map"
+              src="assets/einsatzkarte-platzhalter.svg"
+              alt="Platzhalter fuer den eingebetteten Standort des Geraets">
+          </div>
+        </article>
+
+        <article class="task-card active-task">
+          <div class="task-topline">
+            <span class="task-badge">Abschnitt 1</span>
+            <span id="suppliesState" class="task-state">Wartet auf Freigabe</span>
+          </div>
+          <h3 class="task-title">Handicaps loswerden</h3>
+          <p class="task-story">
+            Auf der Karte sind Erste-Hilfe-Material, Nahrung und waermende Decken vermerkt. Erst wenn alle drei
+            Dinge gefunden wurden, koennen die Passagiere den Weg zur Rettungsbasis antreten.
+          </p>
+
+          <div class="map-panel">
+            <div class="map-copy">
+              <strong>Einsatzkarte</strong>
+              <p>
+                Die Karte wurde gedreht und mit Rueckweg sowie Versorgungssymbolen vorbereitet.
+              </p>
+            </div>
+            <img class="mission-map" src="assets/einsatzkarte-mission.svg" alt="Gedrehte Einsatzkarte mit Rueckweg und Symbolen">
+          </div>
+
+          <div class="checklist">
+            <label class="check-item">
+              <input type="checkbox" data-supply="aid">
+              <span>Erste-Hilfe-Material gefunden</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" data-supply="food">
+              <span>Nahrung gefunden</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" data-supply="blankets">
+              <span>Waermende Decken gefunden</span>
+            </label>
+          </div>
+
+          <button id="confirmSuppliesButton" class="solve-button" type="button">Funde bestaetigen</button>
+          <p id="suppliesFeedback" class="task-feedback" aria-live="polite"></p>
+          <p id="suppliesSuccess" class="task-success"></p>
+        </article>
+
+        <article class="task-card">
+          <div class="task-topline">
+            <span class="task-badge">Abschnitt 2</span>
+            <span id="radioState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Funkkontakt mit dem Pilot</h3>
+          <p class="task-story">
+            Unter den Passagieren befindet sich ein Pilot. Sobald die Versorgung sichergestellt ist, kann die
+            Einsatzzentrale Funkkontakt aufnehmen und den Rueckweg durch den Harrach-Wald koordinieren.
+          </p>
+
+          <div class="task-clue">
+            <strong>Funkprotokoll:</strong>
+            <span id="radioLog">
+              Noch kein Funkkontakt. Die Gruppe muss zuerst mit Material versorgt werden.
+            </span>
+          </div>
+
+          <form id="radioForm" class="overlay-form inline-form">
+            <label>
+              <span>Welcher europaweite Notruf gilt auch hier? Gib nur die Zahl ein.</span>
+              <input id="radioAnswerInput" type="text" autocomplete="off" placeholder="112">
+            </label>
+            <button id="radioButton" class="solve-button" type="submit" disabled>Funkkontakt herstellen</button>
+          </form>
+          <p id="radioFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card">
+          <div class="task-topline">
+            <span class="task-badge">Abschnitt 3</span>
+            <span id="borderState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Grenze ueberqueren</h3>
+          <p class="task-story">
+            Vor der Grenze empfaengt die Einsatzleitung eine verschluesselte Mail. Erst wenn sie entschluesselt
+            wurde, koennen die Passagiere am Grenzwaechter vorbeikommen.
+          </p>
+
+          <div class="task-clue">
+            <strong>Verschluesselte Mail:</strong>
+            <span id="mailPreview">
+              Die Mail nennt den sicheren Grenzpfad nur als Himmelsrichtung. Die Sonne geht dort auf.
+            </span>
+          </div>
+
+          <form id="borderForm" class="overlay-form inline-form">
+            <label>
+              <span>Welche Himmelsrichtung nennt die Mail?</span>
+              <input id="borderAnswerInput" type="text" autocomplete="off" placeholder="Osten">
+            </label>
+            <button id="borderButton" class="solve-button" type="submit" disabled>Mail entschluesseln</button>
+          </form>
+          <p id="borderFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card">
+          <div class="task-topline">
+            <span class="task-badge">Abschnitt 4</span>
+            <span id="treesState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Umgestuerzte Baeume</h3>
+          <p class="task-story">
+            Auf dem Weg blockieren umgestuerzte Baeume den Pfad. Die Passagiere und die Einsatzleitung muessen
+            dieselbe Entscheidung treffen, damit die Gruppe den richtigen Korridor nimmt.
+          </p>
+
+          <div class="task-clue">
+            <strong>Entscheidung:</strong>
+            <span id="treesLog">
+              Noch keine Abstimmung. Erst die Grenze passieren, dann kann die Route um die Baeume geplant werden.
+            </span>
+          </div>
+
+          <form id="treesForm" class="overlay-form inline-form">
+            <label>
+              <span>Die Passagiere erhalten denselben Code wie die Leitstelle: 3 + 4 + 5 = ?</span>
+              <input id="treesAnswerInput" type="text" autocomplete="off" placeholder="12">
+            </label>
+            <button id="treesButton" class="solve-button" type="submit" disabled>Route bestaetigen</button>
+          </form>
+          <p id="treesFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card">
+          <div class="task-topline">
+            <span class="task-badge">Abschnitt 5</span>
+            <span id="finalState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Letzte Aufgabe vor der Rettungsstation</h3>
+          <p class="task-story">
+            Kurz vor der Lagerwiese der Rettungsstation muss die Gruppe noch ein letztes Freigabesignal an die
+            Leitstelle schicken.
+          </p>
+
+          <div class="task-clue">
+            <strong>Finales Signal:</strong>
+            <span id="finalLog">
+              Die Gruppe ist noch nicht nah genug an der Rettungsstation.
+            </span>
+          </div>
+
+          <form id="finalForm" class="overlay-form inline-form">
+            <label>
+              <span>Welches NATO-Funkwort steht fuer den Buchstaben A?</span>
+              <input id="finalAnswerInput" type="text" autocomplete="off" placeholder="Alpha">
+            </label>
+            <button id="finalButton" class="solve-button" type="submit" disabled>Ankunft freigeben</button>
+          </form>
+          <p id="finalFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card">
+          <div class="task-topline">
+            <span class="task-badge">Ziel</span>
+            <span id="returnState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Ankunft an der Rettungsstation</h3>
+          <p class="task-story">
+            Wenn alle Aufgaben geloest sind, kann die Einsatzleitung die letzten Meter zur Lagerwiese freigeben
+            und die Ankunft bestaetigen.
+          </p>
+
+          <div class="task-clue">
+            <strong>Ankunftsstatus:</strong>
+            <span id="returnLog">
+              Die Passagiere sind noch unterwegs und muessen zuerst alle Hindernisse hinter sich bringen.
+            </span>
+          </div>
+
+          <button id="returnButton" class="solve-button" type="button" disabled>Ankunft bestaetigen</button>
+          <p id="returnFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+      </div>
     </section>
   </main>
-
-  <template id="taskTemplate">
-    <article class="task-card">
-      <div class="task-topline">
-        <span class="task-badge"></span>
-        <span class="task-state"></span>
-      </div>
-      <h3 class="task-title"></h3>
-      <p class="task-story"></p>
-      <div class="task-clue"></div>
-      <form class="task-form">
-        <label>
-          <span>Antwort eingeben</span>
-          <input class="task-input" type="text" autocomplete="off" required>
-        </label>
-        <button class="solve-button" type="submit">Aufgabe bestätigen</button>
-      </form>
-      <p class="task-feedback" aria-live="polite"></p>
-      <p class="task-success"></p>
-    </article>
-  </template>
 
   <script src="app.js"></script>
 </body>
