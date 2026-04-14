@@ -150,7 +150,7 @@ function healedTotal() {
 }
 
 function phaseOneDone() {
-  return state.passengerCount !== null && healedTotal() >= state.passengerCount;
+  return state.passengerCount !== null && healedTotal() === state.passengerCount;
 }
 
 function nextCareStep() {
@@ -396,10 +396,23 @@ carePopupForm.addEventListener("submit", (event) => {
     carePopupInput.value = "";
     carePopupFeedback.textContent = "";
   } else {
-    state.activeCareStep = null;
-    if (phaseOneDone()) {
-      state.stormReminderVisible = true;
+    if (!phaseOneDone()) {
+      state.healed.aid = null;
+      state.healed.food = null;
+      state.healed.warmth = null;
+      state.activeCareStep = "aid";
+      carePopupInput.value = "";
+      carePopupFeedback.textContent = "Die Summe passt nicht zur Gesamtanzahl. Bitte alle drei Angaben neu eingeben.";
+      carePopupFeedback.className = "task-feedback error";
+      radioFeedback.textContent = "Phase 1 ungueltig. Alle drei Angaben neu eingeben.";
+      radioFeedback.className = "task-feedback error";
+      saveState();
+      render();
+      return;
     }
+
+    state.activeCareStep = null;
+    state.stormReminderVisible = true;
   }
 
   saveState();
