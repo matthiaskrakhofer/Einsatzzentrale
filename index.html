@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Einsatzleitungszentrale</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="background-glow background-glow-left"></div>
+  <div class="background-glow background-glow-right"></div>
+
+  <main class="dashboard">
+    <section class="hero">
+      <p class="eyebrow">Notfallprotokoll Alpha-7</p>
+      <h1>Einsatzleitungszentrale</h1>
+      <p class="hero-text">
+        Ein Passagierflugzeug ist in einem abgelegenen Gebirge abgestürzt. Das Rettungsteam kann nur weiter
+        vorrücken, wenn jede Leitstellen-Aufgabe gelöst wird. Mit jedem gelösten Rätsel wird der nächste
+        Einsatzabschnitt freigeschaltet, bis alle Überlebenden gerettet sind.
+      </p>
+
+      <div class="status-grid">
+        <article class="status-card">
+          <span class="status-label">Gerettete Personen</span>
+          <strong id="rescuedCount">0 / 24</strong>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Freigeschaltete Einsätze</span>
+          <strong id="unlockedCount">1 / 4</strong>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Missionstatus</span>
+          <strong id="missionStatus">Lage wird ausgewertet</strong>
+        </article>
+      </div>
+
+      <div class="progress-block">
+        <div class="progress-meta">
+          <span>Rettungsfortschritt</span>
+          <span id="progressLabel">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mission-panel">
+      <div class="mission-header">
+        <div>
+          <p class="eyebrow">Einsatzabschnitte</p>
+          <h2>Rätsel und Freischaltungen</h2>
+        </div>
+        <button id="resetButton" class="ghost-button" type="button">Fortschritt zurücksetzen</button>
+      </div>
+
+      <div id="taskList" class="task-list"></div>
+    </section>
+  </main>
+
+  <template id="taskTemplate">
+    <article class="task-card">
+      <div class="task-topline">
+        <span class="task-badge"></span>
+        <span class="task-state"></span>
+      </div>
+      <h3 class="task-title"></h3>
+      <p class="task-story"></p>
+      <div class="task-clue"></div>
+      <form class="task-form">
+        <label>
+          <span>Antwort eingeben</span>
+          <input class="task-input" type="text" autocomplete="off" required>
+        </label>
+        <button class="solve-button" type="submit">Aufgabe bestätigen</button>
+      </form>
+      <p class="task-feedback" aria-live="polite"></p>
+      <p class="task-success"></p>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
