@@ -73,8 +73,6 @@ const treesFeedback = document.getElementById("treesFeedback");
 
 const finalState = document.getElementById("finalState");
 const finalLog = document.getElementById("finalLog");
-const finalForm = document.getElementById("finalForm");
-const finalAnswerInput = document.getElementById("finalAnswerInput");
 const finalButton = document.getElementById("finalButton");
 const finalFeedback = document.getElementById("finalFeedback");
 
@@ -424,15 +422,7 @@ treesButton.addEventListener("click", () => {
   render();
 });
 
-finalForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const answer = normalize(finalAnswerInput.value);
-  const expected = normalize(MORSE_EMAIL_PLAIN);
-  if (answer !== expected) {
-    finalFeedback.textContent = "Falsche Entschluesselung.";
-    finalFeedback.className = "task-feedback error";
-    return;
-  }
+finalButton.addEventListener("click", () => {
   state.mailSolved = true;
   finalFeedback.textContent = "Nachricht weitergegeben.";
   finalFeedback.className = "task-feedback success";
@@ -455,7 +445,6 @@ resetButton.addEventListener("click", () => {
   passwordInput.value = "";
   passengerInput.value = "";
   borderAnswerInput.value = "";
-  finalAnswerInput.value = "";
   carePopupInput.value = "";
 
   passwordFeedback.textContent = "";
