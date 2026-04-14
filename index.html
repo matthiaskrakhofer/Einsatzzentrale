@@ -31,6 +31,39 @@
     </section>
   </div>
 
+  <div id="carePopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel">
+      <p class="eyebrow">Phase 1</p>
+      <h2 id="carePopupTitle">Erste Hilfe</h2>
+      <p id="carePopupText" class="overlay-text">
+        Hilf den Passagieren, die Erste Hilfe zu finden.
+      </p>
+      <form id="carePopupForm" class="overlay-form">
+        <label>
+          <span id="carePopupLabel">Wie viele Passagiere wurden versorgt?</span>
+          <input id="carePopupInput" type="number" min="0" max="999" required>
+        </label>
+        <button id="carePopupButton" type="submit" class="solve-button">Bestaetigen</button>
+      </form>
+      <p id="carePopupFeedback" class="task-feedback" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <div id="weatherPopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel weather-popup-panel">
+      <p class="eyebrow">Wetterwarnung</p>
+      <h2>Sturmfront naht</h2>
+      <p class="overlay-text">
+        Achtung: Der Sturm ist jetzt Teil der Mission. Behalte ihn auf dem gesamten Rueckweg im Blick.
+      </p>
+      <div class="warning-box">
+        <strong>Warnung</strong>
+        <p>Ist der Sturm in eurer Naehe, faellt das Funkgeraet aus.</p>
+      </div>
+      <button id="weatherPopupButton" type="button" class="solve-button">Warnung verstanden</button>
+    </section>
+  </div>
+
   <main id="app" class="dashboard hidden">
     <aside id="stormReminder" class="storm-reminder hidden">
       <strong>Sturmwarnung</strong>
@@ -164,34 +197,8 @@
             <img class="mission-map" src="assets/einsatzkarte-mission.svg" alt="Gedrehte Einsatzkarte mit Rueckweg und Symbolen">
           </div>
 
-          <div class="care-stack">
-            <form id="radioForm" class="overlay-form inline-form">
-              <label>
-                <span>Erste Hilfe: Wie viele Kinder wurden versorgt?</span>
-                <input id="radioAnswerInput" type="number" min="0" max="999" autocomplete="off" placeholder="0">
-              </label>
-              <button id="radioButton" class="solve-button" type="submit" disabled>Erste Hilfe bestaetigen</button>
-            </form>
-            <p id="radioFeedback" class="task-feedback" aria-live="polite"></p>
-
-            <form id="foodForm" class="overlay-form inline-form">
-              <label>
-                <span>Nahrung: Wie viele Kinder wurden versorgt?</span>
-                <input id="foodAnswerInput" type="number" min="0" max="999" autocomplete="off" placeholder="0">
-              </label>
-              <button id="foodButton" class="solve-button" type="submit" disabled>Nahrung bestaetigen</button>
-            </form>
-            <p id="foodFeedback" class="task-feedback" aria-live="polite"></p>
-
-            <form id="warmthForm" class="overlay-form inline-form">
-              <label>
-                <span>Waerme: Wie viele Kinder wurden versorgt?</span>
-                <input id="warmthAnswerInput" type="number" min="0" max="999" autocomplete="off" placeholder="0">
-              </label>
-              <button id="warmthButton" class="solve-button" type="submit" disabled>Waerme bestaetigen</button>
-            </form>
-            <p id="warmthFeedback" class="task-feedback" aria-live="polite"></p>
-          </div>
+          <button id="openCarePopupButton" class="solve-button" type="button" disabled>Versorgung starten</button>
+          <p id="radioFeedback" class="task-feedback" aria-live="polite"></p>
 
           <div class="task-clue">
             <strong>Phase-1-Status:</strong>

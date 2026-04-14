@@ -80,6 +80,15 @@ body {
   padding: 2rem;
 }
 
+.care-popup-panel {
+  width: min(520px, 100%);
+}
+
+.weather-popup-panel {
+  border: 2px solid rgba(255, 186, 110, 0.75);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
 .overlay-text,
 .hero-text,
 .task-story,
@@ -278,11 +287,6 @@ h1 {
 
 .task-card {
   padding: 1.2rem;
-}
-
-.care-stack {
-  display: grid;
-  gap: 0.25rem;
 }
 
 .warning-box {

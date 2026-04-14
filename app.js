@@ -1,5 +1,29 @@
 const PASSWORD = "RoterPanda25";
-const STORAGE_KEY = "einsatzleitungszentrale-v6";
+const STORAGE_KEY = "einsatzleitungszentrale-v7";
+
+const CARE_STEPS = [
+  {
+    key: "aid",
+    title: "Erste Hilfe",
+    text: "Hilf den Passagieren, die Erste Hilfe zu finden.",
+    label: "Wie viele Passagiere wurden versorgt?",
+    done: "Erste Hilfe abgeschlossen."
+  },
+  {
+    key: "food",
+    title: "Nahrung",
+    text: "Hilf den Passagieren, Nahrung zu finden.",
+    label: "Wie viele Passagiere wurden versorgt?",
+    done: "Nahrung abgeschlossen."
+  },
+  {
+    key: "warmth",
+    title: "Waerme",
+    text: "Hilf den Passagieren, Waerme zu finden.",
+    label: "Wie viele Passagiere wurden versorgt?",
+    done: "Waerme abgeschlossen."
+  }
+];
 
 const lockScreen = document.getElementById("lockScreen");
 const app = document.getElementById("app");
@@ -7,6 +31,17 @@ const stormReminder = document.getElementById("stormReminder");
 const passwordForm = document.getElementById("passwordForm");
 const passwordInput = document.getElementById("passwordInput");
 const passwordFeedback = document.getElementById("passwordFeedback");
+
+const carePopup = document.getElementById("carePopup");
+const carePopupTitle = document.getElementById("carePopupTitle");
+const carePopupText = document.getElementById("carePopupText");
+const carePopupLabel = document.getElementById("carePopupLabel");
+const carePopupForm = document.getElementById("carePopupForm");
+const carePopupInput = document.getElementById("carePopupInput");
+const carePopupButton = document.getElementById("carePopupButton");
+const carePopupFeedback = document.getElementById("carePopupFeedback");
+const weatherPopup = document.getElementById("weatherPopup");
+const weatherPopupButton = document.getElementById("weatherPopupButton");
 
 const totalPassengers = document.getElementById("totalPassengers");
 const suppliedPassengers = document.getElementById("suppliedPassengers");
@@ -34,20 +69,8 @@ const suppliesSuccess = document.getElementById("suppliesSuccess");
 
 const radioState = document.getElementById("radioState");
 const radioLog = document.getElementById("radioLog");
-const radioForm = document.getElementById("radioForm");
-const radioAnswerInput = document.getElementById("radioAnswerInput");
-const radioButton = document.getElementById("radioButton");
+const openCarePopupButton = document.getElementById("openCarePopupButton");
 const radioFeedback = document.getElementById("radioFeedback");
-
-const foodForm = document.getElementById("foodForm");
-const foodAnswerInput = document.getElementById("foodAnswerInput");
-const foodButton = document.getElementById("foodButton");
-const foodFeedback = document.getElementById("foodFeedback");
-
-const warmthForm = document.getElementById("warmthForm");
-const warmthAnswerInput = document.getElementById("warmthAnswerInput");
-const warmthButton = document.getElementById("warmthButton");
-const warmthFeedback = document.getElementById("warmthFeedback");
 
 const borderState = document.getElementById("borderState");
 const mailPreview = document.getElementById("mailPreview");
@@ -87,6 +110,8 @@ function defaultState() {
       food: null,
       warmth: null
     },
+    activeCareStep: null,
+    weatherAcknowledged: false,
     stormReminderVisible: false,
     returnStarted: false,
     treesCleared: false,
@@ -97,10 +122,7 @@ function defaultState() {
 
 function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) {
-    return defaultState();
-  }
-
+  if (!saved) return defaultState();
   try {
     const parsed = JSON.parse(saved);
     return {
@@ -128,10 +150,11 @@ function healedTotal() {
 }
 
 function phaseOneDone() {
-  if (state.passengerCount === null) {
-    return false;
-  }
-  return healedTotal() >= state.passengerCount;
+  return state.passengerCount !== null && healedTotal() >= state.passengerCount;
+}
+
+function nextCareStep() {
+  return CARE_STEPS.find((step) => state.healed[step.key] === null) || null;
 }
 
 function completedStages() {
@@ -151,45 +174,26 @@ function progressPercent() {
 }
 
 function currentPhase() {
-  if (!state.radioKitReady) {
-    return "storm";
-  }
-  if (state.passengerCount === null) {
-    return "supplies";
-  }
-  if (!phaseOneDone()) {
-    return "radio";
-  }
-  if (!state.returnStarted) {
-    return "border";
-  }
-  if (!state.treesCleared) {
-    return "trees";
-  }
-  if (!state.finalSignalSent) {
-    return "final";
-  }
+  if (!state.radioKitReady) return "storm";
+  if (state.passengerCount === null) return "supplies";
+  if (!phaseOneDone()) return "radio";
+  if (!state.weatherAcknowledged) return "radio";
+  if (!state.returnStarted) return "border";
+  if (!state.treesCleared) return "trees";
+  if (!state.finalSignalSent) return "final";
   return "arrival";
 }
 
 function phaseLabel(phase) {
   switch (phase) {
-    case "storm":
-      return "Funkgeraet";
-    case "supplies":
-      return "Pilot";
-    case "radio":
-      return "Phase 1";
-    case "border":
-      return "Phase 2";
-    case "trees":
-      return "Hindernis";
-    case "final":
-      return "Signal";
-    case "arrival":
-      return state.arrivalConfirmed ? "Abgeschlossen" : "Ankunft";
-    default:
-      return "Warte";
+    case "storm": return "Funkgeraet";
+    case "supplies": return "Pilot";
+    case "radio": return phaseOneDone() && !state.weatherAcknowledged ? "Wetterwarnung" : "Phase 1";
+    case "border": return "Phase 2";
+    case "trees": return "Hindernis";
+    case "final": return "Signal";
+    case "arrival": return state.arrivalConfirmed ? "Abgeschlossen" : "Ankunft";
+    default: return "Warte";
   }
 }
 
@@ -197,6 +201,8 @@ function updateVisibility() {
   lockScreen.classList.toggle("hidden", state.unlocked);
   app.classList.toggle("hidden", !state.unlocked);
   stormReminder.classList.toggle("hidden", !state.unlocked || !state.stormReminderVisible);
+  carePopup.classList.toggle("hidden", !state.unlocked || state.activeCareStep === null);
+  weatherPopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || state.weatherAcknowledged);
 }
 
 function updatePhaseCards() {
@@ -216,6 +222,8 @@ function updateMissionStatus() {
     missionStatus.textContent = "Pilot befragen";
   } else if (!phaseOneDone()) {
     missionStatus.textContent = "Phase 1: Versorgung";
+  } else if (!state.weatherAcknowledged) {
+    missionStatus.textContent = "Wetterwarnung";
   } else if (!state.returnStarted) {
     missionStatus.textContent = "Phase 2: Rueckweg";
   } else if (!state.treesCleared) {
@@ -227,6 +235,18 @@ function updateMissionStatus() {
   } else {
     missionStatus.textContent = "Mission abgeschlossen";
   }
+}
+
+function updateCarePopup() {
+  const step = CARE_STEPS.find((item) => item.key === state.activeCareStep);
+  if (!step) {
+    carePopupFeedback.textContent = "";
+    return;
+  }
+  carePopupTitle.textContent = step.title;
+  carePopupText.textContent = step.text;
+  carePopupLabel.textContent = step.label;
+  carePopupButton.textContent = `${step.title} bestaetigen`;
 }
 
 function updateStartTask() {
@@ -246,14 +266,18 @@ function updatePassengerTask() {
 
 function updatePhaseOneTask() {
   radioState.textContent = phaseOneDone() ? "Abgeschlossen" : state.passengerCount !== null ? "Aktiv" : "Gesperrt";
+  openCarePopupButton.disabled = state.passengerCount === null || phaseOneDone();
 
-  radioButton.disabled = state.passengerCount === null || state.healed.aid !== null;
-  foodButton.disabled = state.healed.aid === null || state.healed.food !== null;
-  warmthButton.disabled = state.healed.food === null || state.healed.warmth !== null;
-
-  radioLog.textContent = phaseOneDone()
-    ? `Phase 1 abgeschlossen. ${healedTotal()} Personen versorgt.`
-    : `Versorgt: ${healedTotal()} / ${state.passengerCount ?? 0}`;
+  if (phaseOneDone()) {
+    radioLog.textContent = `Phase 1 abgeschlossen. ${healedTotal()} Personen versorgt.`;
+  } else if (state.passengerCount !== null) {
+    const next = nextCareStep();
+    radioLog.textContent = next
+      ? `Naechster Schritt: ${next.title}. Versorgt: ${healedTotal()} / ${state.passengerCount}`
+      : `Versorgt: ${healedTotal()} / ${state.passengerCount}`;
+  } else {
+    radioLog.textContent = "Versorgung noch nicht gestartet.";
+  }
 }
 
 function updateReturnTask() {
@@ -261,7 +285,7 @@ function updateReturnTask() {
   borderButton.disabled = !phaseOneDone() || state.returnStarted;
   mailPreview.textContent = state.returnStarted
     ? "Rueckweg freigegeben: Osten."
-    : "Alle Personen muessen versorgt sein. Dann fuehrt Osten auf den Rueckweg.";
+    : "Erst alle versorgen. Dann Rueckweg nach Osten.";
 }
 
 function updateTreesTask() {
@@ -300,18 +324,17 @@ function render() {
   updateTreesTask();
   updateFinalTask();
   updateArrivalTask();
+  updateCarePopup();
   updateVisibility();
 }
 
 passwordForm.addEventListener("submit", (event) => {
   event.preventDefault();
-
   if (passwordInput.value !== PASSWORD) {
     passwordFeedback.textContent = "Falsches Passwort.";
     passwordFeedback.className = "task-feedback error";
     return;
   }
-
   passwordFeedback.textContent = "";
   state.unlocked = true;
   saveState();
@@ -329,13 +352,11 @@ stormButton.addEventListener("click", () => {
 passengerForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const count = Number.parseInt(passengerInput.value, 10);
-
   if (!Number.isInteger(count) || count <= 0) {
     suppliesFeedback.textContent = "Ungueltige Zahl.";
     suppliesFeedback.className = "task-feedback error";
     return;
   }
-
   state.passengerCount = count;
   suppliesFeedback.textContent = "Passagierzahl bestaetigt.";
   suppliesFeedback.className = "task-feedback success";
@@ -343,58 +364,51 @@ passengerForm.addEventListener("submit", (event) => {
   render();
 });
 
-radioForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const healed = Number.parseInt(radioAnswerInput.value, 10);
+openCarePopupButton.addEventListener("click", () => {
+  const next = nextCareStep();
+  if (!next) return;
+  state.activeCareStep = next.key;
+  carePopupInput.value = "";
+  carePopupFeedback.textContent = "";
+  saveState();
+  render();
+});
 
-  if (!Number.isInteger(healed) || healed < 0) {
-    radioFeedback.textContent = "Ungueltige Zahl.";
-    radioFeedback.className = "task-feedback error";
+carePopupForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const value = Number.parseInt(carePopupInput.value, 10);
+  if (!Number.isInteger(value) || value < 0) {
+    carePopupFeedback.textContent = "Ungueltige Zahl.";
+    carePopupFeedback.className = "task-feedback error";
     return;
   }
 
-  state.healed.aid = healed;
-  radioFeedback.textContent = "Erste Hilfe bestaetigt.";
+  const step = CARE_STEPS.find((item) => item.key === state.activeCareStep);
+  if (!step) return;
+
+  state.healed[step.key] = value;
+  radioFeedback.textContent = step.done;
   radioFeedback.className = "task-feedback success";
+
+  const next = nextCareStep();
+  if (next) {
+    state.activeCareStep = next.key;
+    carePopupInput.value = "";
+    carePopupFeedback.textContent = "";
+  } else {
+    state.activeCareStep = null;
+    if (phaseOneDone()) {
+      state.stormReminderVisible = true;
+    }
+  }
+
   saveState();
   render();
 });
 
-foodForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const healed = Number.parseInt(foodAnswerInput.value, 10);
-
-  if (!Number.isInteger(healed) || healed < 0) {
-    foodFeedback.textContent = "Ungueltige Zahl.";
-    foodFeedback.className = "task-feedback error";
-    return;
-  }
-
-  state.healed.food = healed;
-  foodFeedback.textContent = "Nahrung bestaetigt.";
-  foodFeedback.className = "task-feedback success";
-  saveState();
-  render();
-});
-
-warmthForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const healed = Number.parseInt(warmthAnswerInput.value, 10);
-
-  if (!Number.isInteger(healed) || healed < 0) {
-    warmthFeedback.textContent = "Ungueltige Zahl.";
-    warmthFeedback.className = "task-feedback error";
-    return;
-  }
-
-  state.healed.warmth = healed;
-  warmthFeedback.textContent = "Waerme bestaetigt.";
-  warmthFeedback.className = "task-feedback success";
-
-  if (phaseOneDone()) {
-    state.stormReminderVisible = true;
-  }
-
+weatherPopupButton.addEventListener("click", () => {
+  state.weatherAcknowledged = true;
+  state.stormReminderVisible = true;
   saveState();
   render();
 });
@@ -402,13 +416,11 @@ warmthForm.addEventListener("submit", (event) => {
 borderForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const answer = normalize(borderAnswerInput.value);
-
   if (answer !== "osten" && answer !== "ost") {
     borderFeedback.textContent = "Falsche Richtung.";
     borderFeedback.className = "task-feedback error";
     return;
   }
-
   state.returnStarted = true;
   borderFeedback.textContent = "Rueckweg gestartet.";
   borderFeedback.className = "task-feedback success";
@@ -419,13 +431,11 @@ borderForm.addEventListener("submit", (event) => {
 treesForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const answer = normalize(treesAnswerInput.value);
-
   if (answer !== "12") {
     treesFeedback.textContent = "Code falsch.";
     treesFeedback.className = "task-feedback error";
     return;
   }
-
   state.treesCleared = true;
   treesFeedback.textContent = "Pfad freigegeben.";
   treesFeedback.className = "task-feedback success";
@@ -436,13 +446,11 @@ treesForm.addEventListener("submit", (event) => {
 finalForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const answer = normalize(finalAnswerInput.value);
-
   if (answer !== "alpha") {
     finalFeedback.textContent = "Falsches Funkwort.";
     finalFeedback.className = "task-feedback error";
     return;
   }
-
   state.finalSignalSent = true;
   finalFeedback.textContent = "Letzte Freigabe erteilt.";
   finalFeedback.className = "task-feedback success";
@@ -464,24 +472,21 @@ resetButton.addEventListener("click", () => {
 
   passwordInput.value = "";
   passengerInput.value = "";
-  radioAnswerInput.value = "";
-  foodAnswerInput.value = "";
-  warmthAnswerInput.value = "";
   borderAnswerInput.value = "";
   treesAnswerInput.value = "";
   finalAnswerInput.value = "";
+  carePopupInput.value = "";
 
   passwordFeedback.textContent = "";
   stormFeedback.textContent = "";
   suppliesFeedback.textContent = "";
   suppliesSuccess.textContent = "";
   radioFeedback.textContent = "";
-  foodFeedback.textContent = "";
-  warmthFeedback.textContent = "";
   borderFeedback.textContent = "";
   treesFeedback.textContent = "";
   finalFeedback.textContent = "";
   returnFeedback.textContent = "";
+  carePopupFeedback.textContent = "";
 
   render();
 });
