@@ -18,7 +18,7 @@
       <p class="eyebrow">Geschuetzter Zugriff</p>
       <h1>Einsatzleitungszentrale</h1>
       <p class="overlay-text">
-        Der Zugang ist verschluesselt. Gib das Einsatzpasswort ein, um die Leitstelle zu oeffnen.
+        Passwort eingeben, um die Leitstelle zu oeffnen.
       </p>
       <form id="passwordForm" class="overlay-form">
         <label>
@@ -31,33 +31,30 @@
     </section>
   </div>
 
+  <div id="setupOverlay" class="overlay-screen hidden">
+    <section class="overlay-panel">
+      <p class="eyebrow">Missionsstart</p>
+      <h2>Passagierzahl erfassen</h2>
+      <p class="overlay-text">
+        Wie viele Personen sind abgestuerzt?
+      </p>
+      <form id="setupForm" class="overlay-form">
+        <label>
+          <span>Anzahl abgestuerzter Personen</span>
+          <input id="passengerInput" type="number" min="1" max="999" required>
+        </label>
+        <button type="submit" class="solve-button">Mission starten</button>
+      </form>
+    </section>
+  </div>
+
   <main id="app" class="dashboard hidden">
     <section class="hero">
       <p class="eyebrow">Notfallprotokoll Alpha-7</p>
       <h1>Einsatzleitungszentrale</h1>
       <p class="hero-text">
-        Nach einem Flugzeugabsturz im gefaehrlichen Harrach-Wald koordiniert die Leitstelle die Rueckkehr aller
-        Passagiere zur Rettungsstation. Zuerst muessen die noetigen Hilfsgueter gesichert werden. Mit dem Pilot
-        an Bord kann die Einsatzzentrale waehrend der gesamten Mission Funkkontakt halten.
+        Flugzeugabsturz im Harrach-Wald. Fuehre alle Passagiere sicher zur Rettungsstation.
       </p>
-
-      <div id="setupPanel" class="setup-panel">
-        <div>
-          <p class="eyebrow">Missionsstart</p>
-          <h2>Passagierzahl erfassen</h2>
-          <p class="hero-text setup-text">
-            Trage ein, wie viele Personen beim Absturz an Bord waren. Alle Anzeigen und Missionsmeldungen werden
-            automatisch auf diese Anzahl angepasst.
-          </p>
-        </div>
-        <form id="setupForm" class="overlay-form inline-form">
-          <label>
-            <span>Anzahl abgestuerzter Personen</span>
-            <input id="passengerInput" type="number" min="1" max="999" required>
-          </label>
-          <button type="submit" class="solve-button">Mission starten</button>
-        </form>
-      </div>
 
       <div class="status-grid">
         <article class="status-card">
@@ -75,6 +72,10 @@
         <article class="status-card">
           <span class="status-label">Missionstatus</span>
           <strong id="missionStatus">Warte auf Missionsstart</strong>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Aktuelle Phase</span>
+          <strong id="phaseStatus">Noch nicht gestartet</strong>
         </article>
       </div>
 
@@ -99,75 +100,53 @@
       </div>
 
       <div id="missionLocked" class="mission-locked">
-        Erst die Passagierzahl eingeben, dann kann die Mission gestartet werden.
+        Passagierzahl eingeben, um die Mission zu starten.
       </div>
 
       <div id="missionContent" class="task-list hidden">
-        <article class="task-card storm-card">
+        <article class="task-card storm-card phase-card" data-phase="storm">
           <div class="task-topline">
             <span class="task-badge">Lagebild</span>
             <span id="stormState" class="task-state">Sturm wird beobachtet</span>
           </div>
-          <h3 class="task-title">Sturm und Standort des Geraets</h3>
+          <h3 class="task-title">Sturmwarnung</h3>
           <p class="task-story">
-            Eine Person in der Gruppe teilt ihren Standort. Die Einsatzleitung muss den Sturm permanent im Blick
-            behalten, damit die Passagiere ihm ausweichen koennen.
+            Ein Sturm zieht durch das Gebiet.
           </p>
 
           <div class="task-clue">
-            <strong>Live-Lage:</strong>
+            <strong>Wichtiger Hinweis:</strong>
             <span id="stormLog">
-              Noch kein Standort eingebettet. Du kannst spaeter einen Karten- oder Geraetelink eintragen.
+              Sturm im Blick behalten. In Sturmnaehe faellt das Funkgeraet aus.
             </span>
           </div>
 
-          <form id="stormForm" class="overlay-form inline-form">
-            <label>
-              <span>Einbettungslink fuer Standort oder Karte</span>
-              <input id="stormEmbedInput" type="url" placeholder="https://...">
-            </label>
-            <button type="submit" class="solve-button">Standort speichern</button>
-          </form>
-
-          <div class="map-panel">
-            <div class="map-copy">
-              <strong>Sturmhinweis</strong>
-              <p>
-                Halte die Route der Passagiere immer vom Sturm weg. Dieser Bereich kann spaeter mit einem echten
-                eingebetteten Geraetestandort oder Kartenlink befuellt werden.
-              </p>
-            </div>
-            <iframe
-              id="stormEmbed"
-              class="mission-map hidden"
-              title="Eingebetteter Standort des Geraets"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-            <img
-              id="stormPlaceholder"
-              class="mission-map"
-              src="assets/einsatzkarte-platzhalter.svg"
-              alt="Platzhalter fuer den eingebetteten Standort des Geraets">
+          <div class="warning-box">
+            <strong>Warnfenster</strong>
+            <p>
+              Abstand halten und weiter.
+            </p>
           </div>
+
+          <button id="stormButton" class="solve-button" type="button">Sturmwarnung bestaetigen</button>
+          <p id="stormFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
-        <article class="task-card active-task">
+        <article class="task-card active-task phase-card" data-phase="supplies">
           <div class="task-topline">
             <span class="task-badge">Abschnitt 1</span>
             <span id="suppliesState" class="task-state">Wartet auf Freigabe</span>
           </div>
           <h3 class="task-title">Handicaps loswerden</h3>
           <p class="task-story">
-            Auf der Karte sind Erste-Hilfe-Material, Nahrung und waermende Decken vermerkt. Erst wenn alle drei
-            Dinge gefunden wurden, koennen die Passagiere den Weg zur Rettungsbasis antreten.
+            Finde Erste Hilfe, Nahrung und Decken. Erst dann kann die Gruppe weiter.
           </p>
 
           <div class="map-panel">
             <div class="map-copy">
               <strong>Einsatzkarte</strong>
               <p>
-                Die Karte wurde gedreht und mit Rueckweg sowie Versorgungssymbolen vorbereitet.
+                Karte mit Rueckweg und Versorgungspunkten.
               </p>
             </div>
             <img class="mission-map" src="assets/einsatzkarte-mission.svg" alt="Gedrehte Einsatzkarte mit Rueckweg und Symbolen">
@@ -193,15 +172,14 @@
           <p id="suppliesSuccess" class="task-success"></p>
         </article>
 
-        <article class="task-card">
+        <article class="task-card phase-card" data-phase="radio">
           <div class="task-topline">
             <span class="task-badge">Abschnitt 2</span>
             <span id="radioState" class="task-state">Gesperrt</span>
           </div>
           <h3 class="task-title">Funkkontakt mit dem Pilot</h3>
           <p class="task-story">
-            Unter den Passagieren befindet sich ein Pilot. Sobald die Versorgung sichergestellt ist, kann die
-            Einsatzzentrale Funkkontakt aufnehmen und den Rueckweg durch den Harrach-Wald koordinieren.
+            Ein Pilot ist bei der Gruppe. Stelle Funkkontakt her.
           </p>
 
           <div class="task-clue">
@@ -214,6 +192,7 @@
           <form id="radioForm" class="overlay-form inline-form">
             <label>
               <span>Welcher europaweite Notruf gilt auch hier? Gib nur die Zahl ein.</span>
+              
               <input id="radioAnswerInput" type="text" autocomplete="off" placeholder="112">
             </label>
             <button id="radioButton" class="solve-button" type="submit" disabled>Funkkontakt herstellen</button>
@@ -221,15 +200,14 @@
           <p id="radioFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
-        <article class="task-card">
+        <article class="task-card phase-card" data-phase="border">
           <div class="task-topline">
             <span class="task-badge">Abschnitt 3</span>
             <span id="borderState" class="task-state">Gesperrt</span>
           </div>
           <h3 class="task-title">Grenze ueberqueren</h3>
           <p class="task-story">
-            Vor der Grenze empfaengt die Einsatzleitung eine verschluesselte Mail. Erst wenn sie entschluesselt
-            wurde, koennen die Passagiere am Grenzwaechter vorbeikommen.
+            Entschluessle die Mail. Nur dann kommt die Gruppe vorbei.
           </p>
 
           <div class="task-clue">
@@ -249,15 +227,14 @@
           <p id="borderFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
-        <article class="task-card">
+        <article class="task-card phase-card" data-phase="trees">
           <div class="task-topline">
             <span class="task-badge">Abschnitt 4</span>
             <span id="treesState" class="task-state">Gesperrt</span>
           </div>
           <h3 class="task-title">Umgestuerzte Baeume</h3>
           <p class="task-story">
-            Auf dem Weg blockieren umgestuerzte Baeume den Pfad. Die Passagiere und die Einsatzleitung muessen
-            dieselbe Entscheidung treffen, damit die Gruppe den richtigen Korridor nimmt.
+            Baeume blockieren den Weg. Loese den Code fuer den freien Pfad.
           </p>
 
           <div class="task-clue">
@@ -277,15 +254,14 @@
           <p id="treesFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
-        <article class="task-card">
+        <article class="task-card phase-card" data-phase="final">
           <div class="task-topline">
             <span class="task-badge">Abschnitt 5</span>
             <span id="finalState" class="task-state">Gesperrt</span>
           </div>
           <h3 class="task-title">Letzte Aufgabe vor der Rettungsstation</h3>
           <p class="task-story">
-            Kurz vor der Lagerwiese der Rettungsstation muss die Gruppe noch ein letztes Freigabesignal an die
-            Leitstelle schicken.
+            Letztes Funksignal vor der Rettungsstation.
           </p>
 
           <div class="task-clue">
@@ -305,15 +281,14 @@
           <p id="finalFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
-        <article class="task-card">
+        <article class="task-card phase-card" data-phase="arrival">
           <div class="task-topline">
             <span class="task-badge">Ziel</span>
             <span id="returnState" class="task-state">Gesperrt</span>
           </div>
           <h3 class="task-title">Ankunft an der Rettungsstation</h3>
           <p class="task-story">
-            Wenn alle Aufgaben geloest sind, kann die Einsatzleitung die letzten Meter zur Lagerwiese freigeben
-            und die Ankunft bestaetigen.
+            Bestaetige die sichere Ankunft.
           </p>
 
           <div class="task-clue">
