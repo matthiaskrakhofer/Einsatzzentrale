@@ -55,10 +55,14 @@ body {
 }
 
 .overlay-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 1rem;
+  background: rgba(2, 8, 14, 0.72);
 }
 
 .overlay-panel,
@@ -129,6 +133,33 @@ body {
   padding: 3rem 0 4rem;
 }
 
+.storm-reminder {
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  z-index: 18;
+  width: min(320px, calc(100% - 2rem));
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255, 219, 92, 0.96), rgba(255, 102, 71, 0.96));
+  color: #2c1300;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  border: 2px solid rgba(255, 245, 189, 0.75);
+}
+
+.storm-reminder strong {
+  display: block;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 1.1rem;
+  margin-bottom: 0.35rem;
+}
+
+.storm-reminder p {
+  margin: 0;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
 .hero {
   padding: 2rem;
 }
@@ -152,18 +183,6 @@ h1 {
   font-size: clamp(2.4rem, 5vw, 4.5rem);
   line-height: 0.95;
   margin-bottom: 1rem;
-}
-
-.setup-panel {
-  margin-bottom: 1.5rem;
-  padding: 1.2rem;
-  border-radius: 22px;
-  border: 1px solid rgba(87, 216, 255, 0.16);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.setup-text {
-  margin-bottom: 0;
 }
 
 .status-grid {
@@ -259,6 +278,23 @@ h1 {
 
 .task-card {
   padding: 1.2rem;
+}
+
+.care-stack {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.warning-box {
+  margin: 1rem 0;
+  padding: 0.95rem 1rem;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(255, 214, 102, 0.18), rgba(255, 107, 87, 0.18));
+  border: 1px solid rgba(255, 185, 97, 0.42);
+}
+
+.warning-box p {
+  margin: 0.35rem 0 0;
 }
 
 .active-task {

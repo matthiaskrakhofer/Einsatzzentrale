@@ -31,24 +31,12 @@
     </section>
   </div>
 
-  <div id="setupOverlay" class="overlay-screen hidden">
-    <section class="overlay-panel">
-      <p class="eyebrow">Missionsstart</p>
-      <h2>Passagierzahl erfassen</h2>
-      <p class="overlay-text">
-        Wie viele Personen sind abgestuerzt?
-      </p>
-      <form id="setupForm" class="overlay-form">
-        <label>
-          <span>Anzahl abgestuerzter Personen</span>
-          <input id="passengerInput" type="number" min="1" max="999" required>
-        </label>
-        <button type="submit" class="solve-button">Mission starten</button>
-      </form>
-    </section>
-  </div>
-
   <main id="app" class="dashboard hidden">
+    <aside id="stormReminder" class="storm-reminder hidden">
+      <strong>Sturmwarnung</strong>
+      <p>Sturm im Blick behalten. In Sturmnaehe faellt der Funk aus.</p>
+    </aside>
+
     <section class="hero">
       <p class="eyebrow">Notfallprotokoll Alpha-7</p>
       <h1>Einsatzleitungszentrale</h1>
@@ -59,10 +47,10 @@
       <div class="status-grid">
         <article class="status-card">
           <span class="status-label">Abgestuerzte Personen</span>
-          <strong id="totalPassengers">Noch nicht erfasst</strong>
+          <strong id="totalPassengers">Unbekannt</strong>
         </article>
         <article class="status-card">
-          <span class="status-label">Versorgte Personen</span>
+          <span class="status-label">Versorgte Kinder</span>
           <strong id="suppliedPassengers">0</strong>
         </article>
         <article class="status-card">
@@ -71,7 +59,7 @@
         </article>
         <article class="status-card">
           <span class="status-label">Missionstatus</span>
-          <strong id="missionStatus">Warte auf Missionsstart</strong>
+          <strong id="missionStatus">Warte auf Zugriff</strong>
         </article>
         <article class="status-card">
           <span class="status-label">Aktuelle Phase</span>
@@ -99,130 +87,141 @@
         <button id="resetButton" class="ghost-button" type="button">Mission zuruecksetzen</button>
       </div>
 
-      <div id="missionLocked" class="mission-locked">
-        Passagierzahl eingeben, um die Mission zu starten.
-      </div>
-
-      <div id="missionContent" class="task-list hidden">
+      <div id="missionContent" class="task-list">
         <article class="task-card storm-card phase-card" data-phase="storm">
           <div class="task-topline">
-            <span class="task-badge">Lagebild</span>
-            <span id="stormState" class="task-state">Sturm wird beobachtet</span>
+            <span class="task-badge">Start</span>
+            <span id="stormState" class="task-state">Aktiv</span>
           </div>
-          <h3 class="task-title">Sturmwarnung</h3>
+          <h3 class="task-title">Funkgeraet holen</h3>
           <p class="task-story">
-            Ein Sturm zieht durch das Gebiet.
+            Holt die Funkgeraete beim Sicherheitsoffizier.
           </p>
 
           <div class="task-clue">
-            <strong>Wichtiger Hinweis:</strong>
+            <strong>Hinweis:</strong>
             <span id="stormLog">
-              Sturm im Blick behalten. In Sturmnaehe faellt das Funkgeraet aus.
+              Ohne Funkgeraet kein Kontakt zum Piloten.
             </span>
           </div>
 
           <div class="warning-box">
-            <strong>Warnfenster</strong>
+            <strong>Ausrustung</strong>
             <p>
-              Abstand halten und weiter.
+              Funkgeraete vom Sicherheitsoffizier uebernehmen.
             </p>
           </div>
 
-          <button id="stormButton" class="solve-button" type="button">Sturmwarnung bestaetigen</button>
+          <button id="stormButton" class="solve-button" type="button">Funkgeraete erhalten</button>
           <p id="stormFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
-        <article class="task-card active-task phase-card" data-phase="supplies">
+        <article class="task-card phase-card" data-phase="supplies">
           <div class="task-topline">
             <span class="task-badge">Abschnitt 1</span>
-            <span id="suppliesState" class="task-state">Wartet auf Freigabe</span>
+            <span id="suppliesState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Handicaps loswerden</h3>
+          <h3 class="task-title">Pilot befragen</h3>
           <p class="task-story">
-            Finde Erste Hilfe, Nahrung und Decken. Erst dann kann die Gruppe weiter.
+            Frage den Piloten, wie viele Passagiere an Bord waren.
           </p>
 
-          <div class="map-panel">
-            <div class="map-copy">
-              <strong>Einsatzkarte</strong>
-              <p>
-                Karte mit Rueckweg und Versorgungspunkten.
-              </p>
-            </div>
-            <img class="mission-map" src="assets/einsatzkarte-mission.svg" alt="Gedrehte Einsatzkarte mit Rueckweg und Symbolen">
+          <div class="task-clue">
+            <strong>Pilot:</strong>
+            <span id="pilotLog">
+              Stelle zuerst Funkkontakt her.
+            </span>
           </div>
 
-          <div class="checklist">
-            <label class="check-item">
-              <input type="checkbox" data-supply="aid">
-              <span>Erste-Hilfe-Material gefunden</span>
+          <form id="passengerForm" class="overlay-form inline-form">
+            <label>
+              <span>Wie viele Passagiere waren an Bord?</span>
+              <input id="passengerInput" type="number" min="1" max="999" required>
             </label>
-            <label class="check-item">
-              <input type="checkbox" data-supply="food">
-              <span>Nahrung gefunden</span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" data-supply="blankets">
-              <span>Waermende Decken gefunden</span>
-            </label>
-          </div>
-
-          <button id="confirmSuppliesButton" class="solve-button" type="button">Funde bestaetigen</button>
+            <button id="confirmPassengersButton" class="solve-button" type="submit" disabled>Anzahl bestaetigen</button>
+          </form>
           <p id="suppliesFeedback" class="task-feedback" aria-live="polite"></p>
           <p id="suppliesSuccess" class="task-success"></p>
         </article>
 
         <article class="task-card phase-card" data-phase="radio">
           <div class="task-topline">
-            <span class="task-badge">Abschnitt 2</span>
+            <span class="task-badge">Phase 1</span>
             <span id="radioState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Funkkontakt mit dem Pilot</h3>
+          <h3 class="task-title">Phase 1: Versorgung</h3>
           <p class="task-story">
-            Ein Pilot ist bei der Gruppe. Stelle Funkkontakt her.
+            Versorge die Kinder in drei Schritten: Erste Hilfe, Nahrung, Waerme.
           </p>
 
-          <div class="task-clue">
-            <strong>Funkprotokoll:</strong>
-            <span id="radioLog">
-              Noch kein Funkkontakt. Die Gruppe muss zuerst mit Material versorgt werden.
-            </span>
+          <div class="map-panel">
+            <div class="map-copy">
+              <strong>Einsatzkarte</strong>
+              <p>
+                Nutze die Karte fuer das Equipment.
+              </p>
+            </div>
+            <img class="mission-map" src="assets/einsatzkarte-mission.svg" alt="Gedrehte Einsatzkarte mit Rueckweg und Symbolen">
           </div>
 
-          <form id="radioForm" class="overlay-form inline-form">
-            <label>
-              <span>Welcher europaweite Notruf gilt auch hier? Gib nur die Zahl ein.</span>
-              
-              <input id="radioAnswerInput" type="text" autocomplete="off" placeholder="112">
-            </label>
-            <button id="radioButton" class="solve-button" type="submit" disabled>Funkkontakt herstellen</button>
-          </form>
-          <p id="radioFeedback" class="task-feedback" aria-live="polite"></p>
+          <div class="care-stack">
+            <form id="radioForm" class="overlay-form inline-form">
+              <label>
+                <span>Erste Hilfe: Wie viele Kinder wurden versorgt?</span>
+                <input id="radioAnswerInput" type="number" min="0" max="999" autocomplete="off" placeholder="0">
+              </label>
+              <button id="radioButton" class="solve-button" type="submit" disabled>Erste Hilfe bestaetigen</button>
+            </form>
+            <p id="radioFeedback" class="task-feedback" aria-live="polite"></p>
+
+            <form id="foodForm" class="overlay-form inline-form">
+              <label>
+                <span>Nahrung: Wie viele Kinder wurden versorgt?</span>
+                <input id="foodAnswerInput" type="number" min="0" max="999" autocomplete="off" placeholder="0">
+              </label>
+              <button id="foodButton" class="solve-button" type="submit" disabled>Nahrung bestaetigen</button>
+            </form>
+            <p id="foodFeedback" class="task-feedback" aria-live="polite"></p>
+
+            <form id="warmthForm" class="overlay-form inline-form">
+              <label>
+                <span>Waerme: Wie viele Kinder wurden versorgt?</span>
+                <input id="warmthAnswerInput" type="number" min="0" max="999" autocomplete="off" placeholder="0">
+              </label>
+              <button id="warmthButton" class="solve-button" type="submit" disabled>Waerme bestaetigen</button>
+            </form>
+            <p id="warmthFeedback" class="task-feedback" aria-live="polite"></p>
+          </div>
+
+          <div class="task-clue">
+            <strong>Phase-1-Status:</strong>
+            <span id="radioLog">Versorgung noch nicht abgeschlossen.</span>
+          </div>
         </article>
 
         <article class="task-card phase-card" data-phase="border">
           <div class="task-topline">
-            <span class="task-badge">Abschnitt 3</span>
+            <span class="task-badge">Phase 2</span>
             <span id="borderState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Grenze ueberqueren</h3>
+          <h3 class="task-title">Rueckweg starten</h3>
           <p class="task-story">
-            Entschluessle die Mail. Nur dann kommt die Gruppe vorbei.
+            Phase 1 ist abgeschlossen. Jetzt beginnt der Rueckweg.
           </p>
 
           <div class="task-clue">
-            <strong>Verschluesselte Mail:</strong>
+            <strong>Rueckweg:</strong>
             <span id="mailPreview">
-              Die Mail nennt den sicheren Grenzpfad nur als Himmelsrichtung. Die Sonne geht dort auf.
+              Erst wenn alle Passagiere versorgt sind, kann der Rueckweg freigegeben werden.
             </span>
           </div>
 
           <form id="borderForm" class="overlay-form inline-form">
             <label>
-              <span>Welche Himmelsrichtung nennt die Mail?</span>
+              <span>Welche Himmelsrichtung fuehrt auf dem sicheren Rueckweg?</span>
               <input id="borderAnswerInput" type="text" autocomplete="off" placeholder="Osten">
             </label>
-            <button id="borderButton" class="solve-button" type="submit" disabled>Mail entschluesseln</button>
+            <button id="borderButton" class="solve-button" type="submit" disabled>Rueckweg freigeben</button>
           </form>
           <p id="borderFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
