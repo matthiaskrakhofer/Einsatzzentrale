@@ -1,28 +1,12 @@
 const PASSWORD = "RoterPanda25";
-const STORAGE_KEY = "einsatzleitungszentrale-v7";
+const STORAGE_KEY = "einsatzleitungszentrale-v9";
+const MORSE_EMAIL_PLAIN = "Erzaehle dem Waechter folgenden Witz: Faehrt ein Panda ueber die Strasse - BamBus";
+const MORSE_EMAIL_CODE = ". .-. --.. .-.- .... .-.. . / -.. . -- / .-- .-.- -.-. .... - . .-. / ..-. --- .-.. --. . -. -.. . -. / .-- .. - --.. ---... / ..-. .-.- .... .-. - / . .. -. / .--. .- -. -.. .- / ..--. -... . .-. / -.. .. . / ... - .-. .- ... ... . / -....- / -... .- -- -... ..- ...";
 
 const CARE_STEPS = [
-  {
-    key: "aid",
-    title: "Erste Hilfe",
-    text: "Hilf den Passagieren, die Erste Hilfe zu finden.",
-    label: "Wie viele Passagiere wurden versorgt?",
-    done: "Erste Hilfe abgeschlossen."
-  },
-  {
-    key: "food",
-    title: "Nahrung",
-    text: "Hilf den Passagieren, Nahrung zu finden.",
-    label: "Wie viele Passagiere wurden versorgt?",
-    done: "Nahrung abgeschlossen."
-  },
-  {
-    key: "warmth",
-    title: "Waerme",
-    text: "Hilf den Passagieren, Waerme zu finden.",
-    label: "Wie viele Passagiere wurden versorgt?",
-    done: "Waerme abgeschlossen."
-  }
+  { key: "aid", title: "Erste Hilfe", text: "Hilf den Passagieren, die Erste Hilfe zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Erste Hilfe abgeschlossen." },
+  { key: "food", title: "Nahrung", text: "Hilf den Passagieren, Nahrung zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Nahrung abgeschlossen." },
+  { key: "warmth", title: "Waerme", text: "Hilf den Passagieren, Waerme zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Waerme abgeschlossen." }
 ];
 
 const lockScreen = document.getElementById("lockScreen");
@@ -40,6 +24,9 @@ const carePopupForm = document.getElementById("carePopupForm");
 const carePopupInput = document.getElementById("carePopupInput");
 const carePopupButton = document.getElementById("carePopupButton");
 const carePopupFeedback = document.getElementById("carePopupFeedback");
+
+const phaseOnePopup = document.getElementById("phaseOnePopup");
+const phaseOnePopupButton = document.getElementById("phaseOnePopupButton");
 const weatherPopup = document.getElementById("weatherPopup");
 const weatherPopupButton = document.getElementById("weatherPopupButton");
 
@@ -81,8 +68,6 @@ const borderFeedback = document.getElementById("borderFeedback");
 
 const treesState = document.getElementById("treesState");
 const treesLog = document.getElementById("treesLog");
-const treesForm = document.getElementById("treesForm");
-const treesAnswerInput = document.getElementById("treesAnswerInput");
 const treesButton = document.getElementById("treesButton");
 const treesFeedback = document.getElementById("treesFeedback");
 
@@ -105,18 +90,15 @@ function defaultState() {
     unlocked: false,
     radioKitReady: false,
     passengerCount: null,
-    healed: {
-      aid: null,
-      food: null,
-      warmth: null
-    },
+    healed: { aid: null, food: null, warmth: null },
     activeCareStep: null,
+    phaseOneAcknowledged: false,
     weatherAcknowledged: false,
     stormReminderVisible: false,
     returnStarted: false,
     treesCleared: false,
-    finalSignalSent: false,
-    arrivalConfirmed: false
+    mailSolved: false,
+    riverCrossed: false
   };
 }
 
@@ -125,11 +107,7 @@ function loadState() {
   if (!saved) return defaultState();
   try {
     const parsed = JSON.parse(saved);
-    return {
-      ...defaultState(),
-      ...parsed,
-      healed: { ...defaultState().healed, ...(parsed.healed || {}) }
-    };
+    return { ...defaultState(), ...parsed, healed: { ...defaultState().healed, ...(parsed.healed || {}) } };
   } catch {
     return defaultState();
   }
@@ -142,7 +120,7 @@ function saveState() {
 }
 
 function normalize(value) {
-  return value.trim().toLowerCase();
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
 function healedTotal() {
@@ -162,25 +140,28 @@ function completedStages() {
     state.radioKitReady,
     state.passengerCount !== null,
     phaseOneDone(),
+    state.phaseOneAcknowledged,
+    state.weatherAcknowledged,
     state.returnStarted,
     state.treesCleared,
-    state.finalSignalSent,
-    state.arrivalConfirmed
+    state.mailSolved,
+    state.riverCrossed
   ].filter(Boolean).length;
 }
 
 function progressPercent() {
-  return Math.round((completedStages() / 7) * 100);
+  return Math.round((completedStages() / 9) * 100);
 }
 
 function currentPhase() {
   if (!state.radioKitReady) return "storm";
   if (state.passengerCount === null) return "supplies";
   if (!phaseOneDone()) return "radio";
+  if (!state.phaseOneAcknowledged) return "radio";
   if (!state.weatherAcknowledged) return "radio";
   if (!state.returnStarted) return "border";
   if (!state.treesCleared) return "trees";
-  if (!state.finalSignalSent) return "final";
+  if (!state.mailSolved) return "final";
   return "arrival";
 }
 
@@ -188,11 +169,14 @@ function phaseLabel(phase) {
   switch (phase) {
     case "storm": return "Funkgeraet";
     case "supplies": return "Pilot";
-    case "radio": return phaseOneDone() && !state.weatherAcknowledged ? "Wetterwarnung" : "Phase 1";
-    case "border": return "Phase 2";
-    case "trees": return "Hindernis";
-    case "final": return "Signal";
-    case "arrival": return state.arrivalConfirmed ? "Abgeschlossen" : "Ankunft";
+    case "radio":
+      if (phaseOneDone() && !state.phaseOneAcknowledged) return "Phase 1 abgeschlossen";
+      if (phaseOneDone() && !state.weatherAcknowledged) return "Wetterwarnung";
+      return "Phase 1";
+    case "border": return "Rueckweg-Karte";
+    case "trees": return "Grenzfluss";
+    case "final": return "Mail";
+    case "arrival": return state.riverCrossed ? "Grenzfluss ueberquert" : "Grenzfluss";
     default: return "Warte";
   }
 }
@@ -202,7 +186,8 @@ function updateVisibility() {
   app.classList.toggle("hidden", !state.unlocked);
   stormReminder.classList.toggle("hidden", !state.unlocked || !state.stormReminderVisible);
   carePopup.classList.toggle("hidden", !state.unlocked || state.activeCareStep === null);
-  weatherPopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || state.weatherAcknowledged);
+  phaseOnePopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || state.phaseOneAcknowledged);
+  weatherPopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || !state.phaseOneAcknowledged || state.weatherAcknowledged);
 }
 
 function updatePhaseCards() {
@@ -214,27 +199,17 @@ function updatePhaseCards() {
 }
 
 function updateMissionStatus() {
-  if (!state.unlocked) {
-    missionStatus.textContent = "Warte auf Zugriff";
-  } else if (!state.radioKitReady) {
-    missionStatus.textContent = "Funkgeraet holen";
-  } else if (state.passengerCount === null) {
-    missionStatus.textContent = "Pilot befragen";
-  } else if (!phaseOneDone()) {
-    missionStatus.textContent = "Phase 1: Versorgung";
-  } else if (!state.weatherAcknowledged) {
-    missionStatus.textContent = "Wetterwarnung";
-  } else if (!state.returnStarted) {
-    missionStatus.textContent = "Phase 2: Rueckweg";
-  } else if (!state.treesCleared) {
-    missionStatus.textContent = "Hindernis raeumen";
-  } else if (!state.finalSignalSent) {
-    missionStatus.textContent = "Letztes Signal";
-  } else if (!state.arrivalConfirmed) {
-    missionStatus.textContent = "Ankunft bestaetigen";
-  } else {
-    missionStatus.textContent = "Mission abgeschlossen";
-  }
+  if (!state.unlocked) missionStatus.textContent = "Warte auf Zugriff";
+  else if (!state.radioKitReady) missionStatus.textContent = "Funkgeraet holen";
+  else if (state.passengerCount === null) missionStatus.textContent = "Pilot befragen";
+  else if (!phaseOneDone()) missionStatus.textContent = "Phase 1: Versorgung";
+  else if (!state.phaseOneAcknowledged) missionStatus.textContent = "Phase 1 abgeschlossen";
+  else if (!state.weatherAcknowledged) missionStatus.textContent = "Wetterwarnung";
+  else if (!state.returnStarted) missionStatus.textContent = "Rueckweg-Karte";
+  else if (!state.treesCleared) missionStatus.textContent = "Zum Grenzfluss leiten";
+  else if (!state.mailSolved) missionStatus.textContent = "Mail entschluesseln";
+  else if (!state.riverCrossed) missionStatus.textContent = "Grenzfluss ueberqueren";
+  else missionStatus.textContent = "Teststand erreicht";
 }
 
 function updateCarePopup() {
@@ -257,9 +232,7 @@ function updateStartTask() {
 
 function updatePassengerTask() {
   suppliesState.textContent = state.passengerCount !== null ? "Abgeschlossen" : state.radioKitReady ? "Aktiv" : "Gesperrt";
-  pilotLog.textContent = state.passengerCount !== null
-    ? `Pilot meldet: ${state.passengerCount} Passagiere.`
-    : "Stelle zuerst Funkkontakt her.";
+  pilotLog.textContent = state.passengerCount !== null ? `Pilot meldet: ${state.passengerCount} Passagiere.` : "Stelle zuerst Funkkontakt her.";
   confirmPassengersButton.disabled = !state.radioKitReady || state.passengerCount !== null;
   suppliesSuccess.textContent = state.passengerCount !== null ? `${state.passengerCount} Passagiere erfasst.` : "";
 }
@@ -267,49 +240,46 @@ function updatePassengerTask() {
 function updatePhaseOneTask() {
   radioState.textContent = phaseOneDone() ? "Abgeschlossen" : state.passengerCount !== null ? "Aktiv" : "Gesperrt";
   openCarePopupButton.disabled = state.passengerCount === null || phaseOneDone();
-
   if (phaseOneDone()) {
-    radioLog.textContent = `Phase 1 abgeschlossen. ${healedTotal()} Personen versorgt.`;
+    radioLog.textContent = `Phase 1 abgeschlossen. ${healedTotal()} Passagiere versorgt.`;
   } else if (state.passengerCount !== null) {
     const next = nextCareStep();
-    radioLog.textContent = next
-      ? `Naechster Schritt: ${next.title}. Versorgt: ${healedTotal()} / ${state.passengerCount}`
-      : `Versorgt: ${healedTotal()} / ${state.passengerCount}`;
+    radioLog.textContent = next ? `Naechster Schritt: ${next.title}. Versorgt: ${healedTotal()} / ${state.passengerCount}` : `Versorgt: ${healedTotal()} / ${state.passengerCount}`;
   } else {
     radioLog.textContent = "Versorgung noch nicht gestartet.";
   }
 }
 
 function updateReturnTask() {
-  borderState.textContent = state.returnStarted ? "Abgeschlossen" : phaseOneDone() ? "Aktiv" : "Gesperrt";
-  borderButton.disabled = !phaseOneDone() || state.returnStarted;
+  borderState.textContent = state.returnStarted ? "Abgeschlossen" : state.weatherAcknowledged ? "Aktiv" : "Gesperrt";
+  borderButton.disabled = !state.weatherAcknowledged || state.returnStarted;
   mailPreview.textContent = state.returnStarted
-    ? "Rueckweg freigegeben: Osten."
-    : "Erst alle versorgen. Dann Rueckweg nach Osten.";
+    ? "Hinweis frei: Bitte den Sicherheitsoffizier um die Rueckweg-Karte."
+    : "Der Code ist eine zweistellige Zahl. Die Zehnerstelle ist um 1 kleiner als die Einerstelle. Zusammen ergeben beide Ziffern 3. Welche Zahl ist gesucht?";
 }
 
 function updateTreesTask() {
   treesState.textContent = state.treesCleared ? "Abgeschlossen" : state.returnStarted ? "Aktiv" : "Gesperrt";
   treesButton.disabled = !state.returnStarted || state.treesCleared;
-  treesLog.textContent = state.treesCleared ? "Pfad frei." : "Pfad blockiert.";
+  treesLog.textContent = state.treesCleared ? "Grenzfluss erreicht." : "Der Weg zum Grenzfluss ist auf der Rueckweg-Karte markiert.";
 }
 
 function updateFinalTask() {
-  finalState.textContent = state.finalSignalSent ? "Abgeschlossen" : state.treesCleared ? "Aktiv" : "Gesperrt";
-  finalButton.disabled = !state.treesCleared || state.finalSignalSent;
-  finalLog.textContent = state.finalSignalSent ? "ALPHA bestaetigt." : "Freigabesignal fehlt.";
+  finalState.textContent = state.mailSolved ? "Abgeschlossen" : state.treesCleared ? "Aktiv" : "Gesperrt";
+  finalButton.disabled = !state.treesCleared || state.mailSolved;
+  finalLog.textContent = state.mailSolved ? MORSE_EMAIL_PLAIN : MORSE_EMAIL_CODE;
 }
 
 function updateArrivalTask() {
-  returnState.textContent = state.arrivalConfirmed ? "Abgeschlossen" : state.finalSignalSent ? "Aktiv" : "Gesperrt";
-  returnButton.disabled = !state.finalSignalSent || state.arrivalConfirmed;
-  returnLog.textContent = state.arrivalConfirmed ? "Gruppe sicher angekommen." : "Gruppe noch unterwegs.";
+  returnState.textContent = state.riverCrossed ? "Abgeschlossen" : state.mailSolved ? "Aktiv" : "Gesperrt";
+  returnButton.disabled = !state.mailSolved || state.riverCrossed;
+  returnLog.textContent = state.riverCrossed ? "Grenzfluss ueberquert." : "Die Passagiere warten auf die entschluesselte Mail.";
 }
 
 function render() {
   totalPassengers.textContent = state.passengerCount === null ? "Unbekannt" : `${state.passengerCount}`;
   suppliedPassengers.textContent = `${healedTotal()}`;
-  returningPassengers.textContent = state.arrivalConfirmed && state.passengerCount !== null ? `${state.passengerCount}` : "0";
+  returningPassengers.textContent = state.riverCrossed && state.passengerCount !== null ? `${state.passengerCount}` : "0";
   progressLabel.textContent = `${progressPercent()}%`;
   progressFill.style.width = `${progressPercent()}%`;
 
@@ -410,11 +380,16 @@ carePopupForm.addEventListener("submit", (event) => {
       render();
       return;
     }
-
     state.activeCareStep = null;
-    state.stormReminderVisible = true;
+    state.phaseOneAcknowledged = false;
   }
 
+  saveState();
+  render();
+});
+
+phaseOnePopupButton.addEventListener("click", () => {
+  state.phaseOneAcknowledged = true;
   saveState();
   render();
 });
@@ -429,28 +404,21 @@ weatherPopupButton.addEventListener("click", () => {
 borderForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const answer = normalize(borderAnswerInput.value);
-  if (answer !== "osten" && answer !== "ost") {
-    borderFeedback.textContent = "Falsche Richtung.";
+  if (answer !== "12") {
+    borderFeedback.textContent = "Falsche Loesung.";
     borderFeedback.className = "task-feedback error";
     return;
   }
   state.returnStarted = true;
-  borderFeedback.textContent = "Rueckweg gestartet.";
+  borderFeedback.textContent = "Hinweis frei: Bitte den Sicherheitsoffizier um die Rueckweg-Karte.";
   borderFeedback.className = "task-feedback success";
   saveState();
   render();
 });
 
-treesForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const answer = normalize(treesAnswerInput.value);
-  if (answer !== "12") {
-    treesFeedback.textContent = "Code falsch.";
-    treesFeedback.className = "task-feedback error";
-    return;
-  }
+treesButton.addEventListener("click", () => {
   state.treesCleared = true;
-  treesFeedback.textContent = "Pfad freigegeben.";
+  treesFeedback.textContent = "Passagiere zum Grenzfluss geleitet.";
   treesFeedback.className = "task-feedback success";
   saveState();
   render();
@@ -459,21 +427,22 @@ treesForm.addEventListener("submit", (event) => {
 finalForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const answer = normalize(finalAnswerInput.value);
-  if (answer !== "alpha") {
-    finalFeedback.textContent = "Falsches Funkwort.";
+  const expected = normalize(MORSE_EMAIL_PLAIN);
+  if (answer !== expected) {
+    finalFeedback.textContent = "Falsche Entschluesselung.";
     finalFeedback.className = "task-feedback error";
     return;
   }
-  state.finalSignalSent = true;
-  finalFeedback.textContent = "Letzte Freigabe erteilt.";
+  state.mailSolved = true;
+  finalFeedback.textContent = "Nachricht weitergegeben.";
   finalFeedback.className = "task-feedback success";
   saveState();
   render();
 });
 
 returnButton.addEventListener("click", () => {
-  state.arrivalConfirmed = true;
-  returnFeedback.textContent = "Ankunft bestaetigt.";
+  state.riverCrossed = true;
+  returnFeedback.textContent = "Grenzfluss ueberquert.";
   returnFeedback.className = "task-feedback success";
   saveState();
   render();
@@ -486,7 +455,6 @@ resetButton.addEventListener("click", () => {
   passwordInput.value = "";
   passengerInput.value = "";
   borderAnswerInput.value = "";
-  treesAnswerInput.value = "";
   finalAnswerInput.value = "";
   carePopupInput.value = "";
 

@@ -342,6 +342,73 @@ h1 {
   margin-bottom: 0.35rem;
 }
 
+.mail-card {
+  margin: 1rem 0;
+  border-radius: 18px;
+  border: 1px solid rgba(157, 212, 255, 0.22);
+  background: linear-gradient(180deg, rgba(246, 251, 255, 0.08), rgba(160, 214, 255, 0.04));
+  overflow: hidden;
+  animation: mail-arrive 700ms ease;
+}
+
+.mail-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: rgba(122, 193, 255, 0.12);
+  border-bottom: 1px solid rgba(157, 212, 255, 0.18);
+}
+
+.mail-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: #a6deff;
+  color: #062030;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mail-from {
+  color: #d8efff;
+  font-size: 0.9rem;
+}
+
+.mail-body {
+  padding: 1rem;
+  color: #eff6fb;
+}
+
+.mail-body p {
+  margin: 0 0 0.6rem;
+}
+
+.morse-line {
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: rgba(4, 15, 24, 0.72);
+  border: 1px dashed rgba(166, 222, 255, 0.3);
+  font-family: "Chakra Petch", sans-serif;
+  letter-spacing: 0.14em;
+  color: #bce9ff;
+}
+
+@keyframes mail-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .task-feedback {
   min-height: 1.4rem;
   margin: 0.8rem 0 0;

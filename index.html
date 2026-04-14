@@ -51,16 +51,28 @@
 
   <div id="weatherPopup" class="overlay-screen hidden">
     <section class="overlay-panel care-popup-panel weather-popup-panel">
-      <p class="eyebrow">Wetterwarnung</p>
-      <h2>Sturmfront naht</h2>
+      <p class="eyebrow">Phase 2</p>
+      <h2>Rueckweg vorbereiten</h2>
       <p class="overlay-text">
-        Achtung: Der Sturm ist jetzt Teil der Mission. Behalte ihn auf dem gesamten Rueckweg im Blick.
+        Bitte den Sicherheitsoffizier um die Karte, auf der der Rueckweg eingezeichnet ist.
       </p>
       <div class="warning-box">
-        <strong>Warnung</strong>
-        <p>Ist der Sturm in eurer Naehe, faellt das Funkgeraet aus.</p>
+        <strong>Wichtig</strong>
+        <p>Bitte den Sicherheitsoffizier um einen zweiten Laptop und eine Einschulung.</p>
+        <p>Den Standort des Sturms kannst du live verfolgen. Kommt der Sturm den Passagieren zu nahe, faellt der Funkkontakt aus und Passagiere koennen Schaden davontragen.</p>
       </div>
-      <button id="weatherPopupButton" type="button" class="solve-button">Warnung verstanden</button>
+      <button id="weatherPopupButton" type="button" class="solve-button">Rueckweg verstanden</button>
+    </section>
+  </div>
+
+  <div id="phaseOnePopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel">
+      <p class="eyebrow">Status</p>
+      <h2>Phase 1 abgeschlossen</h2>
+      <p class="overlay-text">
+        Alle Passagiere wurden versorgt. Der Rueckweg kann jetzt vorbereitet werden.
+      </p>
+      <button id="phaseOnePopupButton" type="button" class="solve-button">Bestaetigen</button>
     </section>
   </div>
 
@@ -208,100 +220,98 @@
           </div>
           <h3 class="task-title">Rueckweg starten</h3>
           <p class="task-story">
-            Phase 1 ist abgeschlossen. Jetzt beginnt der Rueckweg.
+            Loese zuerst die Rechenaufgabe. Dann bekommst du den Hinweis fuer den Rueckweg.
           </p>
 
           <div class="task-clue">
-            <strong>Rueckweg:</strong>
+            <strong>Aufgabe:</strong>
             <span id="mailPreview">
-              Erst wenn alle Passagiere versorgt sind, kann der Rueckweg freigegeben werden.
+              Der Code ist eine zweistellige Zahl. Die Zehnerstelle ist um 1 kleiner als die Einerstelle. Zusammen ergeben beide Ziffern 3. Welche Zahl ist gesucht?
             </span>
           </div>
 
           <form id="borderForm" class="overlay-form inline-form">
             <label>
-              <span>Welche Himmelsrichtung fuehrt auf dem sicheren Rueckweg?</span>
-              <input id="borderAnswerInput" type="text" autocomplete="off" placeholder="Osten">
+              <span>Loesung eingeben</span>
+              <input id="borderAnswerInput" type="text" autocomplete="off" placeholder="12">
             </label>
-            <button id="borderButton" class="solve-button" type="submit" disabled>Rueckweg freigeben</button>
+            <button id="borderButton" class="solve-button" type="submit" disabled>Hinweis freischalten</button>
           </form>
           <p id="borderFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
         <article class="task-card phase-card" data-phase="trees">
           <div class="task-topline">
-            <span class="task-badge">Abschnitt 4</span>
+            <span class="task-badge">Phase 2</span>
             <span id="treesState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Umgestuerzte Baeume</h3>
+          <h3 class="task-title">Zum Grenzfluss leiten</h3>
           <p class="task-story">
-            Baeume blockieren den Weg. Loese den Code fuer den freien Pfad.
+            Leite die Passagiere zum Grenzfluss. Der Weg ist auf der Rueckweg-Karte markiert.
           </p>
 
           <div class="task-clue">
-            <strong>Entscheidung:</strong>
+            <strong>Hinweis:</strong>
             <span id="treesLog">
-              Noch keine Abstimmung. Erst die Grenze passieren, dann kann die Route um die Baeume geplant werden.
+              Die Rueckweg-Karte zeigt den Weg zum Grenzfluss.
             </span>
           </div>
 
-          <form id="treesForm" class="overlay-form inline-form">
-            <label>
-              <span>Die Passagiere erhalten denselben Code wie die Leitstelle: 3 + 4 + 5 = ?</span>
-              <input id="treesAnswerInput" type="text" autocomplete="off" placeholder="12">
-            </label>
-            <button id="treesButton" class="solve-button" type="submit" disabled>Route bestaetigen</button>
-          </form>
+          <button id="treesButton" class="solve-button" type="button" disabled>Am Grenzfluss angekommen</button>
           <p id="treesFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
         <article class="task-card phase-card" data-phase="final">
           <div class="task-topline">
-            <span class="task-badge">Abschnitt 5</span>
+            <span class="task-badge">Phase 2</span>
             <span id="finalState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Letzte Aufgabe vor der Rettungsstation</h3>
+          <h3 class="task-title">Verschluesselte Mail</h3>
           <p class="task-story">
-            Letztes Funksignal vor der Rettungsstation.
+            Entschluessle die Mail in Morsecode und gib den Satz an die Passagiere weiter.
           </p>
 
-          <div class="task-clue">
-            <strong>Finales Signal:</strong>
-            <span id="finalLog">
-              Die Gruppe ist noch nicht nah genug an der Rettungsstation.
-            </span>
+          <div class="mail-card">
+            <div class="mail-header">
+              <span class="mail-pill">Neue Mail</span>
+              <span class="mail-from">Von: Leitstelle Nord</span>
+            </div>
+            <div class="mail-body">
+              <p><strong>Betreff:</strong> Grenzfluss</p>
+              <p><strong>Nachricht:</strong></p>
+              <p id="finalLog" class="morse-line">. .-. --.. .-.- .... .-.. . / -.. . -- / .-- .-.- -.-. .... - . .-. / ..-. --- .-.. --. . -. -.. . -. / .-- .. - --.. ---... / ..-. .-.- .... .-. - / . .. -. / .--. .- -. -.. .- / ..--. -... . .-. / -.. .. . / ... - .-. .- ... ... . / -....- / -... .- -- -... ..- ...</p>
+            </div>
           </div>
 
           <form id="finalForm" class="overlay-form inline-form">
             <label>
-              <span>Welches NATO-Funkwort steht fuer den Buchstaben A?</span>
-              <input id="finalAnswerInput" type="text" autocomplete="off" placeholder="Alpha">
+              <span>Welchen Satz muessen die Passagiere dem Waechter sagen?</span>
+              <input id="finalAnswerInput" type="text" autocomplete="off" placeholder="Erzaehle dem Waechter ...">
             </label>
-            <button id="finalButton" class="solve-button" type="submit" disabled>Ankunft freigeben</button>
+            <button id="finalButton" class="solve-button" type="submit" disabled>Mail entschluesseln</button>
           </form>
           <p id="finalFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
         <article class="task-card phase-card" data-phase="arrival">
           <div class="task-topline">
-            <span class="task-badge">Ziel</span>
+            <span class="task-badge">Phase 2</span>
             <span id="returnState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Ankunft an der Rettungsstation</h3>
+          <h3 class="task-title">Grenzfluss ueberqueren</h3>
           <p class="task-story">
-            Bestaetige die sichere Ankunft.
+            Wenn der Waechter den Satz gehoert hat, koennen die Passagiere den Grenzfluss ueberqueren.
           </p>
 
           <div class="task-clue">
-            <strong>Ankunftsstatus:</strong>
-            <span id="returnLog">
-              Die Passagiere sind noch unterwegs und muessen zuerst alle Hindernisse hinter sich bringen.
-            </span>
+            <strong>Status:</strong>
+            <span id="returnLog">Die Passagiere warten auf die entschluesselte Mail.</span>
           </div>
 
-          <button id="returnButton" class="solve-button" type="button" disabled>Ankunft bestaetigen</button>
+          <button id="returnButton" class="solve-button" type="button" disabled>Grenzfluss ueberquert</button>
           <p id="returnFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
+
       </div>
     </section>
   </main>
