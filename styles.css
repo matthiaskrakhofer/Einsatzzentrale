@@ -80,6 +80,10 @@ body {
   padding: 2rem;
 }
 
+.lock-panel {
+  width: min(980px, 100%);
+}
+
 .care-popup-panel {
   width: min(520px, 100%);
 }
@@ -203,11 +207,28 @@ body {
   gap: 1rem;
 }
 
+.prelock-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.prelock-copy {
+  display: grid;
+  gap: 1rem;
+}
+
+.compact-clue {
+  margin: 0;
+}
+
 .pigpen-panel {
   padding: 1rem;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(150, 206, 255, 0.12);
+  height: 100%;
 }
 
 .pigpen-label {
@@ -221,6 +242,7 @@ body {
 .pigpen-graphic {
   display: block;
   width: 100%;
+  max-width: 100%;
   border-radius: 14px;
   border: 1px solid rgba(150, 206, 255, 0.14);
   background: rgba(6, 18, 29, 0.82);
@@ -339,13 +361,12 @@ body {
 }
 
 .storm-reminder {
-  grid-column: 1;
-  position: sticky;
-  right: auto;
-  top: 1rem;
-  z-index: 7;
-  width: 100%;
-  padding: 0.95rem 1rem;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 14;
+  width: min(300px, calc(100vw - 2rem));
+  padding: 0.9rem 0.95rem;
   border-radius: 22px;
   background: linear-gradient(145deg, rgba(255, 223, 122, 0.95), rgba(255, 136, 88, 0.94));
   color: #2c1300;
@@ -412,7 +433,7 @@ body {
   inset: 0;
   background: linear-gradient(120deg, transparent 0%, rgba(130, 220, 255, 0.08) 48%, transparent 100%);
   transform: translateX(-100%);
-  animation: prologue-scan 7s linear infinite;
+  animation: prologue-scan 12s linear infinite;
   pointer-events: none;
 }
 
@@ -422,6 +443,22 @@ body {
   gap: 1rem;
   align-items: center;
   margin-bottom: 0.95rem;
+}
+
+.prologue-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.prologue-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.prologue-button {
+  padding: 0.55rem 0.8rem;
+  font-size: 0.86rem;
 }
 
 .prologue-tag,
@@ -453,19 +490,14 @@ body {
   border: 1px solid rgba(150, 206, 255, 0.1);
   opacity: 0;
   transform: translateY(14px) scale(0.985);
-  animation: prologue-scene 24s infinite;
+  pointer-events: none;
+  transition: opacity 260ms ease, transform 260ms ease;
 }
 
-.prologue-scene:nth-child(2) {
-  animation-delay: 6s;
-}
-
-.prologue-scene:nth-child(3) {
-  animation-delay: 12s;
-}
-
-.prologue-scene:nth-child(4) {
-  animation-delay: 18s;
+.prologue-scene.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .prologue-scene-label {
@@ -547,6 +579,14 @@ h1 {
 
 .overlay-panel h1 {
   max-width: none;
+}
+
+.lock-panel h1 {
+  font-size: clamp(2.2rem, 5vw, 3.9rem);
+  line-height: 0.92;
+  margin-bottom: 1.25rem;
+  max-width: 14ch;
+  overflow-wrap: anywhere;
 }
 
 .hero-text {
@@ -1008,24 +1048,6 @@ h1 {
   }
 }
 
-@keyframes prologue-scene {
-  0%,
-  6% {
-    opacity: 0;
-    transform: translateY(14px) scale(0.985);
-  }
-  10%,
-  23% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  25%,
-  100% {
-    opacity: 0;
-    transform: translateY(-10px) scale(1.01);
-  }
-}
-
 @keyframes prologue-scan {
   from {
     transform: translateX(-100%);
@@ -1170,6 +1192,10 @@ h1 {
 }
 
 @media (max-width: 800px) {
+  .prelock-layout {
+    grid-template-columns: 1fr;
+  }
+
   .dashboard {
     grid-template-columns: 1fr;
     width: min(100% - 1rem, 1100px);
@@ -1186,6 +1212,7 @@ h1 {
   .leadership-profiles,
   .storm-reminder {
     position: static;
+    width: 100%;
   }
 
   .map-panel {
@@ -1213,6 +1240,11 @@ h1 {
   .prologue-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .prologue-controls,
+  .prologue-buttons {
+    width: 100%;
   }
 
   .hero-topline {
@@ -1254,6 +1286,10 @@ h1 {
   .task-topline {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .prologue-buttons {
+    flex-direction: column;
   }
 
   .ghost-button,

@@ -109,6 +109,11 @@ const phaseStatus = document.getElementById("phaseStatus");
 const progressLabel = document.getElementById("progressLabel");
 const progressFill = document.getElementById("progressFill");
 const missionTimer = document.getElementById("missionTimer");
+const prologueStage = document.getElementById("prologueStage");
+const prologueScenes = Array.from(document.querySelectorAll(".prologue-scene"));
+const prologueCounter = document.getElementById("prologueCounter");
+const prologuePrev = document.getElementById("prologuePrev");
+const prologueNext = document.getElementById("prologueNext");
 
 const missionContent = document.getElementById("missionContent");
 const phaseCards = document.querySelectorAll(".phase-card");
@@ -183,6 +188,7 @@ const missionCompleteText = document.getElementById("missionCompleteText");
 
 const resetButton = document.getElementById("resetButton");
 let prelockReady = false;
+let currentPrologueScene = 0;
 
 function defaultState() {
   return {
@@ -325,6 +331,37 @@ function syncMissionTimer() {
     window.clearInterval(missionTimerInterval);
     missionTimerInterval = null;
   }
+}
+
+function updatePrologueUI() {
+  if (!prologueScenes.length) return;
+
+  prologueScenes.forEach((scene, index) => {
+    scene.classList.toggle("is-active", index === currentPrologueScene);
+  });
+
+  if (prologueCounter) {
+    prologueCounter.textContent = `Szene ${currentPrologueScene + 1} von ${prologueScenes.length}`;
+  }
+
+  if (prologuePrev) {
+    prologuePrev.disabled = currentPrologueScene === 0;
+  }
+
+  if (prologueNext) {
+    prologueNext.disabled = currentPrologueScene === prologueScenes.length - 1;
+  }
+}
+
+function changePrologueScene(step) {
+  const nextIndex = Math.min(
+    prologueScenes.length - 1,
+    Math.max(0, currentPrologueScene + step)
+  );
+
+  if (nextIndex === currentPrologueScene) return;
+  currentPrologueScene = nextIndex;
+  updatePrologueUI();
 }
 
 function phaseOneDone() {
@@ -1048,6 +1085,7 @@ resetButton.addEventListener("click", () => {
 });
 
 render();
+updatePrologueUI();
 
 prelockButton.addEventListener("click", () => {
   prelockReady = true;
@@ -1055,3 +1093,35 @@ prelockButton.addEventListener("click", () => {
   passwordFeedback.className = "task-feedback success";
   render();
 });
+
+if (prologuePrev) {
+  prologuePrev.addEventListener("click", () => {
+    changePrologueScene(-1);
+  });
+}
+
+if (prologueNext) {
+  prologueNext.addEventListener("click", () => {
+    changePrologueScene(1);
+  });
+}
+
+if (prologueStage) {
+  prologueStage.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    if (event.deltaY > 0) changePrologueScene(1);
+    if (event.deltaY < 0) changePrologueScene(-1);
+  }, { passive: false });
+
+  prologueStage.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown") {
+      event.preventDefault();
+      changePrologueScene(1);
+    }
+
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageUp") {
+      event.preventDefault();
+      changePrologueScene(-1);
+    }
+  });
+}
