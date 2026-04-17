@@ -128,7 +128,6 @@
 
   <div id="wildlifePopup" class="overlay-screen hidden">
     <section class="overlay-panel care-popup-panel wildlife-popup-panel">
-      <button class="overlay-close" type="button">×</button>
       <p class="eyebrow">Wildtiersichtung</p>
       <h2>Braunbaer gesichtet</h2>
       <p class="overlay-text">
@@ -159,15 +158,9 @@
         </div>
       </article>
 
-      <div id="wildlifeFollowup" class="checklist hidden">
-        <label class="check-item">
-          <input id="wildlifeContactCheck" type="checkbox">
-          <span>Wildtieraufsicht erfolgreich kontaktiert?</span>
-        </label>
-        <label class="check-item">
-          <input id="wildlifeClearCheck" type="checkbox">
-          <span>Keine Gefahr mehr durch Wildtier?</span>
-        </label>
+      <div id="wildlifeFollowup" class="inline-actions hidden">
+        <button id="wildlifeContactButton" type="button" class="solve-button">Wildtieraufsicht kontaktiert</button>
+        <button id="wildlifeClearButton" type="button" class="solve-button">Keine Gefahr mehr durch Wildtier</button>
       </div>
 
       <button id="wildlifePopupButton" type="button" class="ghost-button">Schliessen</button>
@@ -202,11 +195,10 @@
 
   <div id="quicksandPopup" class="overlay-screen hidden">
     <section class="overlay-panel care-popup-panel weather-popup-panel">
-      <button class="overlay-close" type="button">×</button>
       <p class="eyebrow">Letzte Warnung</p>
       <h2>Treibsand-Gefahr</h2>
       <p class="overlay-text">
-        Die GuSp stehen vor einem Treibsandfeld. Der Pilot erkennt die Gefahr rechtzeitig. Jetzt muessen sie den Bereich mit Treibsand-Brettern ueberqueren, die nur in begrenzter Anzahl vorhanden sind.
+        Die GuSp stehen vor einem Treibsandfeld. Der Pilot erkennt die Gefahr rechtzeitig. Von der Crew ist zuerst eine Plane aufzulegen. Darueber kann die Gruppe den Bereich anschliessend mit Treibsand-Brettern sicher ueberqueren.
       </p>
       <figure class="quicksand-symbol">
         <img
@@ -215,15 +207,9 @@
           alt="Symbolbild fuer Treibsandfeld"
         >
       </figure>
-      <div class="checklist">
-        <label class="check-item">
-          <input id="quicksandViewedCheck" type="checkbox">
-          <span>Treibsand-Hinweis verstanden?</span>
-        </label>
-        <label class="check-item">
-          <input id="quicksandClearCheck" type="checkbox">
-          <span>Treibsand erfolgreich ueberquert?</span>
-        </label>
+      <div class="inline-actions">
+        <button id="quicksandViewedButton" type="button" class="solve-button">Treibsand-Hinweis verstanden</button>
+        <button id="quicksandClearButton" type="button" class="solve-button">Treibsand erfolgreich ueberquert</button>
       </div>
     </section>
   </div>

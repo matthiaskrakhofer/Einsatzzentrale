@@ -88,8 +88,8 @@ const wildlifeDecryptButton = document.getElementById("wildlifeDecryptButton");
 const wildlifeContactCard = document.getElementById("wildlifeContactCard");
 const wildlifePhoneText = document.getElementById("wildlifePhoneText");
 const wildlifeFollowup = document.getElementById("wildlifeFollowup");
-const wildlifeContactCheck = document.getElementById("wildlifeContactCheck");
-const wildlifeClearCheck = document.getElementById("wildlifeClearCheck");
+const wildlifeContactButton = document.getElementById("wildlifeContactButton");
+const wildlifeClearButton = document.getElementById("wildlifeClearButton");
 const wildlifePopupButton = document.getElementById("wildlifePopupButton");
 const wildlifeCipherPopup = document.getElementById("wildlifeCipherPopup");
 const wildlifeCipherTitle = document.getElementById("wildlifeCipherTitle");
@@ -100,7 +100,7 @@ const wildlifeCipherButton = document.getElementById("wildlifeCipherButton");
 const wildlifeCipherAttempts = document.getElementById("wildlifeCipherAttempts");
 const wildlifeCipherFeedback = document.getElementById("wildlifeCipherFeedback");
 const quicksandPopup = document.getElementById("quicksandPopup");
-const quicksandViewedCheck = document.getElementById("quicksandViewedCheck");
+const quicksandViewedButton = document.getElementById("quicksandViewedButton");
 const phaseOnePopupText = document.getElementById("phaseOnePopupText");
 
 const totalPassengers = document.getElementById("totalPassengers");
@@ -168,7 +168,7 @@ const returnFeedback = document.getElementById("returnFeedback");
 const routeState = document.getElementById("routeState");
 const routeLog = document.getElementById("routeLog");
 const quicksandButton = document.getElementById("quicksandButton");
-const quicksandClearCheck = document.getElementById("quicksandClearCheck");
+const quicksandClearButton = document.getElementById("quicksandClearButton");
 const routeButton = document.getElementById("routeButton");
 const wildlifeButton = document.getElementById("wildlifeButton");
 const routeFeedback = document.getElementById("routeFeedback");
@@ -501,7 +501,7 @@ function updateVisibility() {
   weatherPopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || !state.phaseOneAcknowledged || state.weatherAcknowledged);
   wildlifePopup.classList.toggle("hidden", !state.unlocked || !state.wildlifeAlerted || state.wildlifeBriefed);
   wildlifeCipherPopup.classList.toggle("hidden", !state.unlocked || !state.wildlifeCipherOpen);
-  quicksandPopup.classList.toggle("hidden", !state.unlocked || !state.quicksandUnlocked || state.quicksandViewed);
+  quicksandPopup.classList.toggle("hidden", !state.unlocked || !state.quicksandUnlocked || state.quicksandCrossed);
 }
 
 function updateLeadershipUI() {
@@ -654,22 +654,21 @@ function updateArrivalTask() {
 
 function updateRouteTask() {
   routeState.textContent = state.routeConfirmed ? "Abgeschlossen" : state.riverCrossed ? "Aktiv" : "Gesperrt";
-  quicksandButton.disabled = !state.riverCrossed || state.quicksandUnlocked;
-  quicksandButton.textContent = state.quicksandUnlocked ? "Treibsand gemeldet" : "Treibsand";
-  quicksandViewedCheck.checked = state.quicksandViewed;
-  quicksandClearCheck.checked = state.quicksandCrossed;
+  quicksandButton.disabled = !state.riverCrossed || state.quicksandCrossed;
+  quicksandButton.textContent = state.quicksandCrossed ? "Treibsand erledigt" : "Treibsand";
   routeButton.disabled = !state.riverCrossed || !state.quicksandViewed || !state.quicksandCrossed || !wildlifeResolved() || state.routeConfirmed;
+  routeButton.textContent = "In der Zivilisation angekommen";
   wildlifeButton.disabled = !state.riverCrossed || state.routeConfirmed;
-  wildlifeButton.textContent = "Wildtiersichtung";
+  wildlifeButton.textContent = wildlifeResolved() && state.wildlifeAlerted ? "Wildtier erledigt" : "Wildtiersichtung";
 
   if (state.routeConfirmed) {
     routeLog.textContent = `${leadershipDisplayName()}, die GuSp und die Besatzung haben die Zivilisation erreicht.`;
   } else if (state.wildlifeAlerted && !wildlifeResolved()) {
     routeLog.textContent = "Wildtiersichtung offen. Erst Wildtieraufsicht kontaktieren und Gefahr beenden, dann weiter Richtung Zivilisation.";
   } else if (state.quicksandCrossed) {
-    routeLog.textContent = "Treibsand erfolgreich ueberquert. Fuehrt die Gruppe weiter bis in die Zivilisation.";
+    routeLog.textContent = "Treibsand erfolgreich ueberquert. Fuehrt die Gruppe jetzt entlang der Karte weiter zurueck in die Zivilisation.";
   } else if (state.quicksandUnlocked) {
-    routeLog.textContent = "Treibsand-Standort bekannt. Fuehrt die GuSp ueber die markierte trockene Route.";
+    routeLog.textContent = "Treibsand erkannt. Die Crew legt zuerst eine Plane auf. Danach kann die Gruppe mit Treibsand-Brettern sicher weitergehen.";
   } else {
     routeLog.textContent = "Nach der Bruecke folgt ihr der vorgeschlagenen Route weiter Richtung Zivilisation.";
   }
@@ -732,8 +731,15 @@ function updateWildlifePopup() {
     : "Entschluesselung des Einsatzlogbuches";
   wildlifeContactCard.classList.toggle("hidden", !state.wildlifePhoneUnlocked);
   wildlifeFollowup.classList.toggle("hidden", !state.wildlifePhoneUnlocked);
-  wildlifeContactCheck.checked = state.wildlifeContactConfirmed;
-  wildlifeClearCheck.checked = state.wildlifeDangerCleared;
+  wildlifeContactButton.disabled = !state.wildlifePhoneUnlocked || state.wildlifeContactConfirmed;
+  wildlifeClearButton.disabled = !state.wildlifeContactConfirmed || state.wildlifeDangerCleared;
+  wildlifeContactButton.textContent = state.wildlifeContactConfirmed
+    ? "Wildtieraufsicht kontaktiert"
+    : "Wildtieraufsicht kontaktiert";
+  wildlifeClearButton.textContent = state.wildlifeDangerCleared
+    ? "Keine Gefahr mehr durch Wildtier"
+    : "Keine Gefahr mehr durch Wildtier";
+  wildlifePopupButton.classList.toggle("hidden", !(state.wildlifeContactConfirmed && state.wildlifeDangerCleared));
 }
 
 function updateCompletionScreen() {
@@ -1024,22 +1030,19 @@ quicksandButton.addEventListener("click", () => {
   render();
 });
 
-quicksandViewedCheck.addEventListener("change", () => {
-  state.quicksandViewed = quicksandViewedCheck.checked;
-  routeFeedback.textContent = state.quicksandViewed
-    ? "Treibsand-Hinweis bestaetigt."
-    : "Treibsand-Hinweis noch offen.";
-  routeFeedback.className = state.quicksandViewed ? "task-feedback success" : "task-feedback";
+quicksandViewedButton.addEventListener("click", () => {
+  state.quicksandViewed = true;
+  routeFeedback.textContent = "Treibsand-Hinweis bestaetigt. Die Crew legt jetzt die Plane auf.";
+  routeFeedback.className = "task-feedback success";
   saveState();
   render();
 });
 
-quicksandClearCheck.addEventListener("change", () => {
-  state.quicksandCrossed = quicksandClearCheck.checked;
-  routeFeedback.textContent = state.quicksandCrossed
-    ? "Treibsand erfolgreich ueberquert."
-    : "Treibsand muss noch bestaetigt werden.";
-  routeFeedback.className = state.quicksandCrossed ? "task-feedback success" : "task-feedback";
+quicksandClearButton.addEventListener("click", () => {
+  state.quicksandCrossed = true;
+  state.quicksandUnlocked = false;
+  routeFeedback.textContent = "Treibsand erfolgreich ueberquert. Folgt jetzt dem Weg auf der Karte weiter bis in die Zivilisation.";
+  routeFeedback.className = "task-feedback success";
   saveState();
   render();
 });
@@ -1050,14 +1053,19 @@ wildlifePopupButton.addEventListener("click", () => {
   render();
 });
 
-wildlifeContactCheck.addEventListener("change", () => {
-  state.wildlifeContactConfirmed = wildlifeContactCheck.checked;
+wildlifeContactButton.addEventListener("click", () => {
+  state.wildlifeContactConfirmed = true;
+  routeFeedback.textContent = "Wildtieraufsicht kontaktiert.";
+  routeFeedback.className = "task-feedback success";
   saveState();
   render();
 });
 
-wildlifeClearCheck.addEventListener("change", () => {
-  state.wildlifeDangerCleared = wildlifeClearCheck.checked;
+wildlifeClearButton.addEventListener("click", () => {
+  state.wildlifeDangerCleared = true;
+  state.wildlifeBriefed = true;
+  routeFeedback.textContent = "Keine Gefahr mehr durch Wildtier. Der Heimweg kann weitergehen.";
+  routeFeedback.className = "task-feedback success";
   saveState();
   render();
 });
@@ -1292,11 +1300,11 @@ document.querySelectorAll(".overlay-close").forEach((btn) => {
     }
 
     if (overlay.id === "quicksandPopup") {
-      state.quicksandViewed = state.quicksandViewed || false;
+      state.quicksandUnlocked = !state.quicksandCrossed;
     }
 
     if (overlay.id === "wildlifePopup") {
-      state.wildlifeBriefed = true;
+      state.wildlifeBriefed = state.wildlifeDangerCleared;
     }
 
     saveState();
