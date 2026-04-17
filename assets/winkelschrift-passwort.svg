@@ -111,7 +111,7 @@
     <use href="#pig-a" x="454" y="14" width="44" height="44"/>
   </g>
 
-  <g transform="translate(620 360)">
+  <g transform="translate(532 360)">
     <rect x="0" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
     <use href="#pig-d" x="14" y="14" width="44" height="44"/>
     <rect x="88" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
