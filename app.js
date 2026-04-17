@@ -108,6 +108,7 @@ const missionStatus = document.getElementById("missionStatus");
 const phaseStatus = document.getElementById("phaseStatus");
 const progressLabel = document.getElementById("progressLabel");
 const progressFill = document.getElementById("progressFill");
+const missionTimer = document.getElementById("missionTimer");
 
 const missionContent = document.getElementById("missionContent");
 const phaseCards = document.querySelectorAll(".phase-card");
@@ -189,6 +190,8 @@ function defaultState() {
     leadershipConfirmed: false,
     leadershipNames: [],
     leadershipProfiles: [],
+    missionStartedAt: null,
+    missionCompletedAt: null,
     radioKitReady: false,
     passengerCount: null,
     crewCount: null,
@@ -230,6 +233,7 @@ function loadState() {
 }
 
 const state = loadState();
+let missionTimerInterval = null;
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -281,6 +285,46 @@ function rescueTarget() {
 
 function rescueComplete() {
   return rescueTarget() > 0 && state.rescuedNames.length === rescueTarget();
+}
+
+function formatElapsedTime(ms) {
+  const safeMs = Math.max(0, ms);
+  const totalHundredths = Math.floor(safeMs / 10);
+  const hundredths = totalHundredths % 100;
+  const totalSeconds = Math.floor(totalHundredths / 100);
+  const seconds = totalSeconds % 60;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const minutes = totalMinutes % 60;
+  const hours = Math.floor(totalMinutes / 60);
+
+  return [
+    String(hours).padStart(2, "0"),
+    String(minutes).padStart(2, "0"),
+    String(seconds).padStart(2, "0")
+  ].join(":") + `.${String(hundredths).padStart(2, "0")}`;
+}
+
+function currentElapsedMs() {
+  if (!state.missionStartedAt) return 0;
+  const end = state.missionCompletedAt || Date.now();
+  return end - state.missionStartedAt;
+}
+
+function updateMissionTimer() {
+  if (!missionTimer) return;
+  missionTimer.textContent = formatElapsedTime(currentElapsedMs());
+}
+
+function syncMissionTimer() {
+  updateMissionTimer();
+
+  const shouldRun = Boolean(state.missionStartedAt) && !state.missionCompletedAt;
+  if (shouldRun && !missionTimerInterval) {
+    missionTimerInterval = window.setInterval(updateMissionTimer, 50);
+  } else if (!shouldRun && missionTimerInterval) {
+    window.clearInterval(missionTimerInterval);
+    missionTimerInterval = null;
+  }
 }
 
 function phaseOneDone() {
@@ -611,6 +655,7 @@ function render() {
   updateLeadershipUI();
   updateCarePopup();
   updateVisibility();
+  syncMissionTimer();
 }
 
 passwordForm.addEventListener("submit", (event) => {
@@ -648,6 +693,7 @@ leadershipForm.addEventListener("submit", (event) => {
   state.leadershipNames = names;
   state.leadershipProfiles = generateLeadershipProfiles(names);
   state.leadershipConfirmed = true;
+  if (!state.missionStartedAt) state.missionStartedAt = Date.now();
   leadershipFeedback.textContent = "";
   saveState();
   render();
@@ -955,6 +1001,7 @@ rescueForm.addEventListener("submit", (event) => {
   rescueNameInput.value = "";
 
   if (rescueComplete()) {
+    if (!state.missionCompletedAt) state.missionCompletedAt = Date.now();
     rescueFeedback.textContent = "Alle GuSp und Besatzungsmitglieder sind erfasst.";
     rescueFeedback.className = "task-feedback success";
   } else {

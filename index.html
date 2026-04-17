@@ -56,7 +56,7 @@
       <p class="eyebrow">Einsatzleitung</p>
       <h2>Team eintragen</h2>
       <p class="overlay-text">
-        Trage die Namen der Einsatzleitung ein. Es koennen 1 bis 5 Personen mitspielen. Mehrere Namen bitte mit Komma trennen.
+        Trage die Namen der Einsatzleitung ein. Es koennen 1 bis 5 Personen teilnehmen. Mehrere Namen bitte mit Komma trennen.
       </p>
       <form id="leadershipForm" class="overlay-form">
         <label>
@@ -248,7 +248,13 @@
     </aside>
 
     <section class="hero">
-      <p class="eyebrow">Notfallprotokoll Alpha-7</p>
+      <div class="hero-topline">
+        <p class="eyebrow">Notfallprotokoll Alpha-7</p>
+        <div class="mission-timer" aria-live="polite">
+          <span class="mission-timer-label">Live-Timer</span>
+          <strong id="missionTimer">00:00:00.00</strong>
+        </div>
+      </div>
       <h1>Einsatzleitungszentrale</h1>
       <p class="hero-text">
         <span id="heroAddress">Einsatzleitung</span>, ein Flug mit GuSp nach Nordschweden endet tief in der Wildnis. Ab jetzt fuehrt ihr die Rettungsmission.

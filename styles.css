@@ -255,93 +255,102 @@ body {
 }
 
 .dashboard {
-  width: min(1100px, calc(100% - 2rem));
+  display: grid;
+  grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+  gap: 1rem;
+  width: min(1280px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 3rem 0 4rem;
+  padding: 1.25rem 0 4rem;
+  align-items: start;
 }
 
 .leadership-profiles {
-  position: fixed;
-  left: 1rem;
+  grid-column: 1;
+  position: sticky;
   top: 1rem;
-  z-index: 18;
-  width: min(320px, calc(100% - 2rem));
-  padding: 1rem 1.05rem;
-  border-radius: 18px;
-  background: rgba(6, 18, 29, 0.94);
-  border: 1px solid rgba(150, 206, 255, 0.18);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  z-index: 8;
+  width: 100%;
+  padding: 0.85rem 0.95rem 0.95rem;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(87, 216, 255, 0.02)),
+    rgba(6, 18, 29, 0.72);
+  border: 1px solid rgba(150, 206, 255, 0.14);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(14px);
 }
 
 .leadership-profiles strong {
   display: block;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.45rem;
   font-family: "Chakra Petch", sans-serif;
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .leadership-command-text {
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.7rem;
   color: var(--accent);
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   line-height: 1.45;
 }
 
 .leadership-profiles-list {
   display: grid;
-  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 0.65rem;
 }
 
 .leadership-card {
-  padding: 0.8rem 0.85rem;
+  padding: 0.72rem 0.78rem;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(150, 206, 255, 0.12);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(150, 206, 255, 0.1);
 }
 
 .leadership-card.is-command {
-  background: linear-gradient(145deg, rgba(87, 216, 255, 0.16), rgba(27, 203, 255, 0.08));
-  border-color: rgba(87, 216, 255, 0.36);
-  box-shadow: inset 0 0 0 1px rgba(87, 216, 255, 0.14);
+  background: linear-gradient(145deg, rgba(87, 216, 255, 0.14), rgba(27, 203, 255, 0.05));
+  border-color: rgba(87, 216, 255, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(87, 216, 255, 0.1);
 }
 
 .command-badge {
   display: inline-flex;
-  margin-bottom: 0.45rem;
-  padding: 0.22rem 0.55rem;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 999px;
   background: rgba(87, 216, 255, 0.18);
   color: #dff7ff;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .leadership-card h3 {
-  margin-bottom: 0.35rem;
-  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.98rem;
 }
 
 .leadership-card p {
-  margin: 0.18rem 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  margin: 0.12rem 0;
+  color: rgba(154, 180, 200, 0.95);
+  font-size: 0.84rem;
+  line-height: 1.38;
 }
 
 .storm-reminder {
-  position: fixed;
-  right: 1rem;
+  grid-column: 1;
+  position: sticky;
+  right: auto;
   top: 1rem;
-  z-index: 18;
-  width: min(320px, calc(100% - 2rem));
-  padding: 1rem 1.1rem;
-  border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 219, 92, 0.96), rgba(255, 102, 71, 0.96));
+  z-index: 7;
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(255, 223, 122, 0.95), rgba(255, 136, 88, 0.94));
   color: #2c1300;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
-  border: 2px solid rgba(255, 245, 189, 0.75);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 245, 189, 0.7);
 }
 
 .storm-reminder strong {
@@ -372,7 +381,17 @@ body {
 }
 
 .hero {
+  grid-column: 2;
   padding: 2rem;
+  min-width: 0;
+}
+
+.hero-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
 }
 
 .prologue-panel {
@@ -478,10 +497,36 @@ body {
 }
 
 .eyebrow {
-  margin: 0 0 0.5rem;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.mission-timer {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(150, 206, 255, 0.12);
+  min-width: 150px;
+}
+
+.mission-timer-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mission-timer strong {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 1rem;
+  line-height: 1;
   color: var(--accent);
 }
 
@@ -493,14 +538,25 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.4rem, 5vw, 4.5rem);
-  line-height: 0.95;
+  font-size: clamp(2.6rem, 4.8vw, 4.2rem);
+  line-height: 0.96;
   margin-bottom: 1rem;
+  max-width: 11ch;
+  text-wrap: balance;
+}
+
+.overlay-panel h1 {
+  max-width: none;
+}
+
+.hero-text {
+  max-width: 58rem;
+  font-size: clamp(1.04rem, 1.7vw, 1.16rem);
 }
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -514,10 +570,14 @@ h1 {
 
 .status-card {
   padding: 1rem 1.1rem;
+  min-width: 0;
 }
 
 .status-card strong {
   font-size: 1.1rem;
+  line-height: 1.3;
+  display: block;
+  overflow-wrap: anywhere;
 }
 
 .progress-block {
@@ -552,8 +612,10 @@ h1 {
 }
 
 .mission-panel {
+  grid-column: 2;
   margin-top: 1.5rem;
   padding: 1.5rem;
+  min-width: 0;
 }
 
 .mission-header {
@@ -616,6 +678,15 @@ h1 {
 
 .task-card {
   padding: 1.2rem;
+}
+
+.task-title {
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  line-height: 1.1;
+}
+
+.task-story {
+  max-width: 68ch;
 }
 
 .warning-box {
@@ -854,6 +925,14 @@ h1 {
   color: #d8efff;
 }
 
+.task-clue span,
+.task-clue p,
+.warning-box p,
+.warning-box span,
+.mail-body p {
+  overflow-wrap: anywhere;
+}
+
 .task-clue strong {
   display: block;
   margin-bottom: 0.35rem;
@@ -911,8 +990,11 @@ h1 {
   background: rgba(4, 15, 24, 0.72);
   border: 1px dashed rgba(166, 222, 255, 0.3);
   font-family: "Chakra Petch", sans-serif;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.11em;
+  font-size: 0.95rem;
+  line-height: 1.8;
   color: #bce9ff;
+  overflow-wrap: anywhere;
 }
 
 @keyframes mail-arrive {
@@ -1088,6 +1170,24 @@ h1 {
 }
 
 @media (max-width: 800px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    width: min(100% - 1rem, 1100px);
+    gap: 0.85rem;
+  }
+
+  .leadership-profiles,
+  .storm-reminder,
+  .hero,
+  .mission-panel {
+    grid-column: 1;
+  }
+
+  .leadership-profiles,
+  .storm-reminder {
+    position: static;
+  }
+
   .map-panel {
     grid-template-columns: 1fr;
   }
@@ -1095,7 +1195,6 @@ h1 {
 
 @media (max-width: 640px) {
   .dashboard {
-    width: min(100% - 1rem, 1100px);
     padding-top: 1rem;
   }
 
@@ -1116,6 +1215,15 @@ h1 {
     align-items: flex-start;
   }
 
+  .hero-topline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mission-timer {
+    align-items: flex-start;
+  }
+
   .logbook-header {
     flex-direction: column;
     align-items: flex-start;
@@ -1131,6 +1239,21 @@ h1 {
 
   .prologue-stage {
     min-height: 260px;
+  }
+
+  .leadership-profiles-list {
+    grid-template-columns: 1fr;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mail-header,
+  .progress-meta,
+  .task-topline {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .ghost-button,
