@@ -215,7 +215,16 @@
           alt="Symbolbild fuer Treibsandfeld"
         >
       </figure>
-      <button id="quicksandPopupButton" type="button" class="solve-button">Treibsand-Hinweis verstanden</button>
+      <div class="checklist">
+        <label class="check-item">
+          <input id="quicksandViewedCheck" type="checkbox">
+          <span>Treibsand-Hinweis verstanden?</span>
+        </label>
+        <label class="check-item">
+          <input id="quicksandClearCheck" type="checkbox">
+          <span>Treibsand erfolgreich ueberquert?</span>
+        </label>
+      </div>
     </section>
   </div>
 
@@ -266,7 +275,7 @@
         <span id="heroAddress">Einsatzleitung</span>, ein Flug mit GuSp nach Nordschweden endet tief in der Wildnis. Ab jetzt fuehrt ihr die Rettungsmission.
       </p>
 
-      <section class="prologue-panel" aria-label="Vorgeschichte">
+      <section id="prologuePanel" class="prologue-panel" aria-label="Vorgeschichte">
         <div class="prologue-header">
           <span class="prologue-tag">Vorgeschichte</span>
           <div class="prologue-controls">
@@ -274,10 +283,12 @@
             <div class="prologue-buttons">
               <button id="prologuePrev" class="ghost-button prologue-button" type="button">Zurueck</button>
               <button id="prologueNext" class="ghost-button prologue-button" type="button">Weiter</button>
+              <button id="prologueClose" class="ghost-button prologue-button hidden" type="button">Zur Mission</button>
             </div>
           </div>
         </div>
-        <div id="prologueStage" class="prologue-stage" tabindex="0" aria-label="Vorgeschichte weiterklicken oder scrollen">
+        <p class="prologue-hint">Lest die Vorgeschichte Schritt fuer Schritt und geht nur mit den Buttons weiter.</p>
+        <div id="prologueStage" class="prologue-stage" aria-label="Vorgeschichte">
           <article class="prologue-scene is-active" data-scene="0">
             <p class="prologue-scene-label">01 Start in Wien</p>
             <h3>Die Reise beginnt ruhig</h3>
@@ -308,6 +319,7 @@
           </article>
         </div>
       </section>
+      <button id="prologueOpen" class="ghost-button prologue-reopen hidden" type="button">Vorgeschichte anzeigen</button>
 
       <div class="status-grid">
         <article class="status-card">
@@ -444,7 +456,7 @@
           </div>
           <h3 class="task-title">Rueckweg starten</h3>
           <p class="task-story">
-            Loese zuerst die Rechenaufgabe. Dann bekommst du den Hinweis zur Rueckweg-Karte.
+            Loest zuerst die Rechenaufgabe. Danach bekommt ihr den Hinweis zur Rueckweg-Karte.
           </p>
 
           <div class="task-clue">
@@ -492,7 +504,7 @@
           </div>
           <h3 class="task-title">Verschluesselte Mail</h3>
           <p class="task-story">
-            Entschluessle die Mail in Morsecode und gib den Satz an die GuSp weiter.
+            Entschluesselt die Mail in Morsecode und gebt den Satz per Funk an die GuSp weiter.
           </p>
 
           <div class="mail-card">
@@ -521,7 +533,7 @@
           </div>
           <h3 class="task-title">Bruecke ueberqueren</h3>
           <p class="task-story">
-            Wenn der Waechter den Satz gehoert hat, koennen die GuSp die schmale Bruecke ueber den Grenzfluss ueberqueren.
+            Sobald der Waechter den Satz gehoert hat, koennen die GuSp die schmale Bruecke ueber den Grenzfluss ueberqueren.
           </p>
 
           <div class="task-clue">
@@ -540,7 +552,7 @@
           </div>
           <h3 class="task-title">Heimweg Richtung Zivilisation</h3>
           <p class="task-story">
-            Empfehlung: Fuehre die GuSp entlang der vorgeschlagenen Route weiter Richtung Zivilisation.
+            Fuehrt die GuSp entlang der vorgeschlagenen Route weiter in Richtung Zivilisation.
           </p>
 
           <div class="task-clue">
@@ -566,13 +578,6 @@
             <button id="quicksandButton" class="danger-button" type="button" disabled>Treibsand</button>
             <button id="routeButton" class="solve-button" type="button" disabled>Zivilisation erreicht</button>
             <button id="wildlifeButton" class="danger-button wildlife-button" type="button" disabled>Wildtiersichtung</button>
-          </div>
-
-          <div id="quicksandFollowup" class="checklist hidden">
-            <label class="check-item">
-              <input id="quicksandClearCheck" type="checkbox">
-              <span>Treibsand erfolgreich ueberquert?</span>
-            </label>
           </div>
           <p id="routeFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
@@ -605,7 +610,7 @@
           </div>
           <h3 class="task-title">Gerettete einzeln erfassen</h3>
           <p class="task-story">
-            Trage die Vornamen aller Geretteten einzeln ein. So seht ihr, ob alle GuSp und die Besatzung zurueck sind.
+            Tragt die Vornamen der geretteten GuSp und der Besatzung getrennt ein. So koennt ihr kontrollieren, ob wirklich alle zurueck sind.
           </p>
 
           <div class="task-clue">
@@ -617,13 +622,30 @@
 
           <form id="rescueForm" class="overlay-form inline-form">
             <label>
-              <span>Vorname einer geretteten Person</span>
-              <input id="rescueNameInput" type="text" autocomplete="off" placeholder="Vorname eingeben">
+              <span>Vorname eines geretteten GuSp</span>
+              <input id="rescueNameInput" type="text" autocomplete="off" placeholder="GuSp-Vorname eingeben">
             </label>
-            <button id="rescueNameButton" class="solve-button" type="submit" disabled>Namen eintragen</button>
+            <button id="rescueNameButton" class="solve-button" type="submit" disabled>GuSp eintragen</button>
           </form>
 
-          <div id="rescuedNamesList" class="rescued-names-list"></div>
+          <form id="crewRescueForm" class="overlay-form inline-form">
+            <label>
+              <span>Vorname eines geretteten Besatzungsmitglieds</span>
+              <input id="crewRescueNameInput" type="text" autocomplete="off" placeholder="Besatzungsname eingeben">
+            </label>
+            <button id="crewRescueNameButton" class="solve-button" type="submit" disabled>Besatzung eintragen</button>
+          </form>
+
+          <div class="rescue-columns">
+            <div>
+              <strong class="rescue-list-title">Gerettete GuSp</strong>
+              <div id="rescuedNamesList" class="rescued-names-list"></div>
+            </div>
+            <div>
+              <strong class="rescue-list-title">Gerettete Besatzung</strong>
+              <div id="rescuedCrewNamesList" class="rescued-names-list"></div>
+            </div>
+          </div>
           <p id="rescueFeedback" class="task-feedback" aria-live="polite"></p>
 
           <div id="missionCompleteCard" class="task-clue hidden">
@@ -661,6 +683,11 @@
         <strong>Gerettete Namen</strong>
         <div id="completionNamesList" class="rescued-names-list"></div>
       </div>
+      <div class="completion-chip-block">
+        <strong>Besatzung</strong>
+        <div id="completionCrewNamesList" class="rescued-names-list"></div>
+      </div>
+      <p id="completionCrewText" class="overlay-text">Dank an die tapfere Besatzung.</p>
       <button id="completionResetButton" type="button" class="solve-button">Neue Mission starten</button>
     </section>
   </div>

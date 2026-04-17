@@ -100,7 +100,7 @@ const wildlifeCipherButton = document.getElementById("wildlifeCipherButton");
 const wildlifeCipherAttempts = document.getElementById("wildlifeCipherAttempts");
 const wildlifeCipherFeedback = document.getElementById("wildlifeCipherFeedback");
 const quicksandPopup = document.getElementById("quicksandPopup");
-const quicksandPopupButton = document.getElementById("quicksandPopupButton");
+const quicksandViewedCheck = document.getElementById("quicksandViewedCheck");
 const phaseOnePopupText = document.getElementById("phaseOnePopupText");
 
 const totalPassengers = document.getElementById("totalPassengers");
@@ -111,11 +111,14 @@ const phaseStatus = document.getElementById("phaseStatus");
 const progressLabel = document.getElementById("progressLabel");
 const progressFill = document.getElementById("progressFill");
 const missionTimer = document.getElementById("missionTimer");
+const prologuePanel = document.getElementById("prologuePanel");
 const prologueStage = document.getElementById("prologueStage");
 const prologueScenes = Array.from(document.querySelectorAll(".prologue-scene"));
 const prologueCounter = document.getElementById("prologueCounter");
 const prologuePrev = document.getElementById("prologuePrev");
 const prologueNext = document.getElementById("prologueNext");
+const prologueClose = document.getElementById("prologueClose");
+const prologueOpen = document.getElementById("prologueOpen");
 
 const missionContent = document.getElementById("missionContent");
 const phaseCards = document.querySelectorAll(".phase-card");
@@ -165,7 +168,6 @@ const returnFeedback = document.getElementById("returnFeedback");
 const routeState = document.getElementById("routeState");
 const routeLog = document.getElementById("routeLog");
 const quicksandButton = document.getElementById("quicksandButton");
-const quicksandFollowup = document.getElementById("quicksandFollowup");
 const quicksandClearCheck = document.getElementById("quicksandClearCheck");
 const routeButton = document.getElementById("routeButton");
 const wildlifeButton = document.getElementById("wildlifeButton");
@@ -181,8 +183,12 @@ const rescueLog = document.getElementById("rescueLog");
 const rescueForm = document.getElementById("rescueForm");
 const rescueNameInput = document.getElementById("rescueNameInput");
 const rescueNameButton = document.getElementById("rescueNameButton");
+const crewRescueForm = document.getElementById("crewRescueForm");
+const crewRescueNameInput = document.getElementById("crewRescueNameInput");
+const crewRescueNameButton = document.getElementById("crewRescueNameButton");
 const rescueFeedback = document.getElementById("rescueFeedback");
 const rescuedNamesList = document.getElementById("rescuedNamesList");
+const rescuedCrewNamesList = document.getElementById("rescuedCrewNamesList");
 const missionCompleteCard = document.getElementById("missionCompleteCard");
 const missionCompleteText = document.getElementById("missionCompleteText");
 const completionScreen = document.getElementById("completionScreen");
@@ -190,6 +196,8 @@ const completionLeadText = document.getElementById("completionLeadText");
 const completionTimerValue = document.getElementById("completionTimerValue");
 const completionRescueValue = document.getElementById("completionRescueValue");
 const completionNamesList = document.getElementById("completionNamesList");
+const completionCrewNamesList = document.getElementById("completionCrewNamesList");
+const completionCrewText = document.getElementById("completionCrewText");
 const completionResetButton = document.getElementById("completionResetButton");
 
 const resetButton = document.getElementById("resetButton");
@@ -202,6 +210,7 @@ function defaultState() {
     leadershipConfirmed: false,
     leadershipNames: [],
     leadershipProfiles: [],
+    prologueDismissed: false,
     missionStartedAt: null,
     missionCompletedAt: null,
     radioKitReady: false,
@@ -229,7 +238,8 @@ function defaultState() {
     quicksandViewed: false,
     quicksandCrossed: false,
     phaseTwoClosed: false,
-    rescuedNames: []
+    rescuedNames: [],
+    rescuedCrewNames: []
   };
 }
 
@@ -238,7 +248,13 @@ function loadState() {
   if (!saved) return defaultState();
   try {
     const parsed = JSON.parse(saved);
-    return { ...defaultState(), ...parsed, healed: { ...defaultState().healed, ...(parsed.healed || {}) } };
+    return {
+      ...defaultState(),
+      ...parsed,
+      rescuedNames: parsed.rescuedNames || [],
+      rescuedCrewNames: parsed.rescuedCrewNames || [],
+      healed: { ...defaultState().healed, ...(parsed.healed || {}) }
+    };
   } catch {
     return defaultState();
   }
@@ -296,7 +312,13 @@ function rescueTarget() {
 }
 
 function rescueComplete() {
-  return rescueTarget() > 0 && state.rescuedNames.length === rescueTarget();
+  return rescueTarget() > 0
+    && state.rescuedNames.length === (state.passengerCount || 0)
+    && state.rescuedCrewNames.length === (state.crewCount || 0);
+}
+
+function rescuedTotal() {
+  return state.rescuedNames.length + state.rescuedCrewNames.length;
 }
 
 function wildlifeResolved() {
@@ -350,6 +372,22 @@ function syncMissionTimer() {
 function updatePrologueUI() {
   if (!prologueScenes.length) return;
 
+  const shouldLockPrologue =
+    state.unlocked &&
+    state.leadershipConfirmed &&
+    !state.prologueDismissed &&
+    currentPrologueScene < prologueScenes.length;
+
+  document.body.classList.toggle("prologue-reading", shouldLockPrologue);
+
+  if (prologuePanel) {
+    prologuePanel.classList.toggle("hidden", state.prologueDismissed);
+  }
+
+  if (prologueOpen) {
+    prologueOpen.classList.toggle("hidden", !state.prologueDismissed);
+  }
+
   prologueScenes.forEach((scene, index) => {
     scene.classList.toggle("is-active", index === currentPrologueScene);
   });
@@ -364,6 +402,10 @@ function updatePrologueUI() {
 
   if (prologueNext) {
     prologueNext.disabled = currentPrologueScene === prologueScenes.length - 1;
+  }
+
+  if (prologueClose) {
+    prologueClose.classList.toggle("hidden", state.prologueDismissed || currentPrologueScene !== prologueScenes.length - 1);
   }
 }
 
@@ -473,7 +515,7 @@ function updateLeadershipUI() {
   leadershipCommandText.replaceChildren();
   const commandLabel = document.createElement("span");
   commandLabel.className = "leadership-command-label";
-  commandLabel.textContent = "Aktuell in Fuehrung";
+  commandLabel.textContent = "Aktuelle Einsatzleitung";
   const commandName = document.createElement("strong");
   commandName.className = "leadership-command-name";
   commandName.textContent = commander;
@@ -488,7 +530,7 @@ function updateLeadershipUI() {
     if (index === currentCommanderIndex()) {
       const badge = document.createElement("span");
       badge.className = "command-badge";
-      badge.textContent = "Kommandofuehrung";
+      badge.textContent = "Aktuelle Einsatzleitung";
       card.appendChild(badge);
     }
 
@@ -614,7 +656,7 @@ function updateRouteTask() {
   routeState.textContent = state.routeConfirmed ? "Abgeschlossen" : state.riverCrossed ? "Aktiv" : "Gesperrt";
   quicksandButton.disabled = !state.riverCrossed || state.quicksandUnlocked;
   quicksandButton.textContent = state.quicksandUnlocked ? "Treibsand gemeldet" : "Treibsand";
-  quicksandFollowup.classList.toggle("hidden", !state.quicksandUnlocked);
+  quicksandViewedCheck.checked = state.quicksandViewed;
   quicksandClearCheck.checked = state.quicksandCrossed;
   routeButton.disabled = !state.riverCrossed || !state.quicksandViewed || !state.quicksandCrossed || !wildlifeResolved() || state.routeConfirmed;
   wildlifeButton.disabled = !state.riverCrossed || state.routeConfirmed;
@@ -646,8 +688,10 @@ function updateRescueTask() {
   rescueState.textContent = rescueComplete() ? "Abgeschlossen" : state.phaseTwoClosed ? "Aktiv" : "Gesperrt";
   rescueNameButton.disabled = !state.phaseTwoClosed || rescueComplete();
   rescueNameInput.disabled = !state.phaseTwoClosed || rescueComplete();
+  crewRescueNameButton.disabled = !state.phaseTwoClosed || rescueComplete();
+  crewRescueNameInput.disabled = !state.phaseTwoClosed || rescueComplete();
   rescueLog.textContent = state.phaseTwoClosed
-    ? `GuSp: ${state.passengerCount}, Besatzung: ${state.crewCount}, gesamt zurueckzubringen: ${target}. Eingetragen: ${state.rescuedNames.length} von ${target}.`
+    ? `GuSp: ${state.passengerCount}, Besatzung: ${state.crewCount}, gesamt: ${target}. Eingetragen: ${rescuedTotal()} von ${target}.`
     : "Phase 2 muss zuerst abgeschlossen werden.";
 
   rescuedNamesList.innerHTML = "";
@@ -658,9 +702,17 @@ function updateRescueTask() {
     rescuedNamesList.appendChild(tag);
   });
 
+  rescuedCrewNamesList.innerHTML = "";
+  state.rescuedCrewNames.forEach((name, index) => {
+    const tag = document.createElement("span");
+    tag.className = "rescued-name-chip";
+    tag.textContent = `${index + 1}. ${name}`;
+    rescuedCrewNamesList.appendChild(tag);
+  });
+
   missionCompleteCard.classList.toggle("hidden", !rescueComplete());
   if (rescueComplete()) {
-    missionCompleteText.textContent = `Gratulation ${leadershipDisplayName()}, die Mission ist erfolgreich abgeschlossen. Gute Besserung an alle Geretteten.`;
+    missionCompleteText.textContent = `Gratulation ${leadershipDisplayName()}, alle GuSp und alle Besatzungsmitglieder sind sicher zurueck. Gute Besserung an alle Geretteten.`;
   }
 }
 
@@ -686,8 +738,8 @@ function updateWildlifePopup() {
 
 function updateCompletionScreen() {
   completionTimerValue.textContent = formatElapsedTime(currentElapsedMs());
-  completionRescueValue.textContent = `${state.rescuedNames.length}`;
-  completionLeadText.textContent = `Gratulation ${leadershipDisplayName()}, eure Mission war erfolgreich. Gute Besserung an alle Geretteten.`;
+  completionRescueValue.textContent = `${rescuedTotal()}`;
+  completionLeadText.textContent = `Gratulation ${leadershipDisplayName()}, eure Mission war erfolgreich. Alle GuSp und alle Besatzungsmitglieder haben es in die Zivilisation geschafft.`;
   completionNamesList.innerHTML = "";
   state.rescuedNames.forEach((name, index) => {
     const tag = document.createElement("span");
@@ -695,6 +747,16 @@ function updateCompletionScreen() {
     tag.textContent = `${index + 1}. ${name}`;
     completionNamesList.appendChild(tag);
   });
+  completionCrewNamesList.innerHTML = "";
+  state.rescuedCrewNames.forEach((name, index) => {
+    const tag = document.createElement("span");
+    tag.className = "rescued-name-chip";
+    tag.textContent = `${index + 1}. ${name}`;
+    completionCrewNamesList.appendChild(tag);
+  });
+  completionCrewText.textContent = state.rescuedCrewNames.length
+    ? `Dank an die tapfere Besatzung: ${state.rescuedCrewNames.join(", ")}.`
+    : "Dank an die tapfere Besatzung.";
 }
 
 function updateWildlifeCipherPopup() {
@@ -711,7 +773,7 @@ function updateWildlifeCipherPopup() {
 function render() {
   totalPassengers.textContent = totalPeople() === null ? "Unbekannt" : `${totalPeople()}`;
   suppliedPassengers.textContent = `${healedTotal()}`;
-  returningPassengers.textContent = state.phaseTwoClosed ? `${state.rescuedNames.length}` : "0";
+  returningPassengers.textContent = state.phaseTwoClosed ? `${rescuedTotal()}` : "0";
   progressLabel.textContent = `${progressPercent()}%`;
   progressFill.style.width = `${progressPercent()}%`;
 
@@ -732,6 +794,7 @@ function render() {
   updateWildlifePopup();
   updateWildlifeCipherPopup();
   updateCompletionScreen();
+  updatePrologueUI();
   updateLeadershipUI();
   updateCarePopup();
   updateVisibility();
@@ -750,6 +813,7 @@ function resetMission() {
   borderAnswerInput.value = "";
   carePopupInput.value = "";
   rescueNameInput.value = "";
+  crewRescueNameInput.value = "";
 
   passwordFeedback.textContent = "";
   leadershipFeedback.textContent = "";
@@ -954,15 +1018,18 @@ wildlifeButton.addEventListener("click", () => {
 
 quicksandButton.addEventListener("click", () => {
   state.quicksandUnlocked = true;
-  state.quicksandViewed = false;
   routeFeedback.textContent = "Treibsand gemeldet. Standortkarte geoeffnet.";
   routeFeedback.className = "task-feedback success";
   saveState();
   render();
 });
 
-quicksandPopupButton.addEventListener("click", () => {
-  state.quicksandViewed = true;
+quicksandViewedCheck.addEventListener("change", () => {
+  state.quicksandViewed = quicksandViewedCheck.checked;
+  routeFeedback.textContent = state.quicksandViewed
+    ? "Treibsand-Hinweis bestaetigt."
+    : "Treibsand-Hinweis noch offen.";
+  routeFeedback.className = state.quicksandViewed ? "task-feedback success" : "task-feedback";
   saveState();
   render();
 });
@@ -1085,7 +1152,7 @@ rescueForm.addEventListener("submit", (event) => {
   const name = rescueNameInput.value.trim();
   const normalizedName = normalize(name);
   if (!name) {
-    rescueFeedback.textContent = "Bitte einen Vornamen eintragen.";
+    rescueFeedback.textContent = "Bitte einen GuSp-Vornamen eintragen.";
     rescueFeedback.className = "task-feedback error";
     return;
   }
@@ -1096,8 +1163,8 @@ rescueForm.addEventListener("submit", (event) => {
     return;
   }
 
-  if (state.rescuedNames.length >= rescueTarget()) {
-    rescueFeedback.textContent = "Alle Geretteten sind bereits eingetragen.";
+  if (state.rescuedNames.length >= (state.passengerCount || 0)) {
+    rescueFeedback.textContent = "Alle GuSp sind bereits eingetragen.";
     rescueFeedback.className = "task-feedback success";
     return;
   }
@@ -1110,7 +1177,52 @@ rescueForm.addEventListener("submit", (event) => {
     rescueFeedback.textContent = "Alle GuSp und Besatzungsmitglieder sind erfasst.";
     rescueFeedback.className = "task-feedback success";
   } else {
-    rescueFeedback.textContent = `${state.rescuedNames.length} von ${rescueTarget()} Geretteten eingetragen.`;
+    rescueFeedback.textContent = `${rescuedTotal()} von ${rescueTarget()} Geretteten eingetragen.`;
+    rescueFeedback.className = "task-feedback success";
+  }
+
+  saveState();
+  render();
+});
+
+crewRescueForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (!state.phaseTwoClosed) {
+    rescueFeedback.textContent = "Phase 2 muss zuerst abgeschlossen werden.";
+    rescueFeedback.className = "task-feedback error";
+    return;
+  }
+
+  const name = crewRescueNameInput.value.trim();
+  const normalizedName = normalize(name);
+  if (!name) {
+    rescueFeedback.textContent = "Bitte einen Besatzungsnamen eintragen.";
+    rescueFeedback.className = "task-feedback error";
+    return;
+  }
+
+  if (state.rescuedCrewNames.some((entry) => normalize(entry) === normalizedName)) {
+    rescueFeedback.textContent = "Dieser Besatzungsname wurde bereits eingetragen.";
+    rescueFeedback.className = "task-feedback error";
+    return;
+  }
+
+  if (state.rescuedCrewNames.length >= (state.crewCount || 0)) {
+    rescueFeedback.textContent = "Die Besatzung ist bereits vollstaendig eingetragen.";
+    rescueFeedback.className = "task-feedback success";
+    return;
+  }
+
+  state.rescuedCrewNames.push(name);
+  crewRescueNameInput.value = "";
+
+  if (rescueComplete()) {
+    if (!state.missionCompletedAt) state.missionCompletedAt = Date.now();
+    rescueFeedback.textContent = "Alle GuSp und Besatzungsmitglieder sind erfasst.";
+    rescueFeedback.className = "task-feedback success";
+  } else {
+    rescueFeedback.textContent = `${rescuedTotal()} von ${rescueTarget()} Geretteten eingetragen.`;
     rescueFeedback.className = "task-feedback success";
   }
 
@@ -1122,7 +1234,6 @@ resetButton.addEventListener("click", resetMission);
 completionResetButton.addEventListener("click", resetMission);
 
 render();
-updatePrologueUI();
 
 prelockButton.addEventListener("click", () => {
   prelockReady = true;
@@ -1143,24 +1254,26 @@ if (prologueNext) {
   });
 }
 
+if (prologueClose) {
+  prologueClose.addEventListener("click", () => {
+    state.prologueDismissed = true;
+    saveState();
+    render();
+  });
+}
+
+if (prologueOpen) {
+  prologueOpen.addEventListener("click", () => {
+    state.prologueDismissed = false;
+    saveState();
+    render();
+  });
+}
+
 if (prologueStage) {
   prologueStage.addEventListener("wheel", (event) => {
     event.preventDefault();
-    if (event.deltaY > 0) changePrologueScene(1);
-    if (event.deltaY < 0) changePrologueScene(-1);
   }, { passive: false });
-
-  prologueStage.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown") {
-      event.preventDefault();
-      changePrologueScene(1);
-    }
-
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageUp") {
-      event.preventDefault();
-      changePrologueScene(-1);
-    }
-  });
 }
 
 document.querySelectorAll(".overlay-close").forEach((btn) => {
@@ -1179,7 +1292,7 @@ document.querySelectorAll(".overlay-close").forEach((btn) => {
     }
 
     if (overlay.id === "quicksandPopup") {
-      state.quicksandViewed = true;
+      state.quicksandViewed = state.quicksandViewed || false;
     }
 
     if (overlay.id === "wildlifePopup") {

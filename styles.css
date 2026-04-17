@@ -28,6 +28,10 @@ body {
   overflow-x: hidden;
 }
 
+body.prologue-reading {
+  overflow: hidden;
+}
+
 .background-glow {
   position: fixed;
   width: 24rem;
@@ -162,7 +166,8 @@ body {
 }
 
 .lock-panel {
-  width: min(980px, 100%);
+  width: min(1120px, 100%);
+  padding: 2.35rem;
 }
 
 .care-popup-panel {
@@ -299,7 +304,7 @@ body {
 .prelock-copy {
   display: grid;
   gap: 1rem;
-  max-width: 48rem;
+  max-width: 56rem;
 }
 
 .compact-clue {
@@ -308,11 +313,11 @@ body {
 
 .pigpen-panel {
   justify-self: stretch;
-  padding: 1rem;
-  border-radius: 18px;
+  padding: 1.25rem;
+  border-radius: 22px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(150, 206, 255, 0.12);
-  max-width: 780px;
+  max-width: 920px;
   width: 100%;
 }
 
@@ -328,7 +333,7 @@ body {
   display: block;
   width: 100%;
   max-width: 100%;
-  border-radius: 14px;
+  border-radius: 18px;
   border: 1px solid rgba(150, 206, 255, 0.14);
   background: rgba(6, 18, 29, 0.82);
 }
@@ -400,13 +405,15 @@ body {
   margin: 0 0 0.8rem;
   padding: 0.7rem 0.78rem;
   border-radius: 14px;
-  background: rgba(87, 216, 255, 0.09);
-  border: 1px solid rgba(87, 216, 255, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(87, 216, 255, 0.06);
+  background: linear-gradient(145deg, rgba(255, 220, 122, 0.16), rgba(255, 176, 71, 0.08));
+  border: 1px solid rgba(255, 220, 122, 0.34);
+  box-shadow:
+    0 10px 22px rgba(33, 24, 7, 0.14),
+    inset 0 0 0 1px rgba(255, 239, 189, 0.08);
 }
 
 .leadership-command-label {
-  color: rgba(180, 210, 228, 0.92);
+  color: rgba(255, 239, 189, 0.98);
   font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -414,7 +421,7 @@ body {
 }
 
 .leadership-command-name {
-  color: var(--accent);
+  color: #ffe8aa;
   font-family: "Chakra Petch", sans-serif;
   font-size: 1.08rem;
   font-weight: 700;
@@ -435,12 +442,12 @@ body {
 }
 
 .leadership-card.is-command {
-  background: linear-gradient(145deg, rgba(87, 216, 255, 0.18), rgba(27, 203, 255, 0.08));
-  border-color: rgba(87, 216, 255, 0.4);
+  background: linear-gradient(145deg, rgba(255, 220, 122, 0.14), rgba(255, 161, 79, 0.08));
+  border-color: rgba(255, 220, 122, 0.42);
   box-shadow:
     0 12px 24px rgba(10, 33, 50, 0.22),
-    0 0 0 1px rgba(87, 216, 255, 0.14),
-    inset 0 0 0 1px rgba(87, 216, 255, 0.08);
+    0 0 0 1px rgba(255, 220, 122, 0.12),
+    inset 0 0 0 1px rgba(255, 239, 189, 0.08);
 }
 
 .command-badge {
@@ -448,8 +455,8 @@ body {
   margin-bottom: 0.35rem;
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
-  background: rgba(87, 216, 255, 0.18);
-  color: #dff7ff;
+  background: rgba(255, 220, 122, 0.18);
+  color: #fff1c7;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -471,7 +478,7 @@ body {
 .storm-reminder {
   margin-top: 0.8rem;
   width: 100%;
-  padding: 0.7rem 0.8rem;
+  padding: 0.62rem 0.72rem;
   border-radius: 16px;
   background: linear-gradient(145deg, rgba(255, 223, 122, 0.95), rgba(255, 151, 93, 0.94));
   color: #2c1300;
@@ -482,15 +489,15 @@ body {
 .storm-reminder strong {
   display: block;
   font-family: "Chakra Petch", sans-serif;
-  font-size: 0.98rem;
-  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.22rem;
 }
 
 .storm-radar-row {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.22rem;
 }
 
 .storm-radar-label {
@@ -502,8 +509,8 @@ body {
 
 .storm-reminder p {
   margin: 0;
-  line-height: 1.35;
-  font-size: 0.84rem;
+  line-height: 1.28;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -531,6 +538,14 @@ body {
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(87, 216, 255, 0.02)),
     rgba(7, 22, 34, 0.86);
   overflow: hidden;
+}
+
+body.prologue-reading .status-grid,
+body.prologue-reading .progress-block,
+body.prologue-reading .mission-panel {
+  opacity: 0.42;
+  pointer-events: none;
+  filter: saturate(0.86);
 }
 
 .prologue-panel::after {
@@ -580,6 +595,18 @@ body {
 
 .prologue-loop {
   color: var(--muted);
+}
+
+.prologue-hint {
+  margin: 0 0 0.9rem;
+  color: rgba(255, 220, 122, 0.92);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.prologue-reopen {
+  margin: 0 0 1.1rem;
+  align-self: flex-start;
 }
 
 .prologue-stage {
@@ -1050,11 +1077,16 @@ h1 {
 }
 
 .active-task {
-  border-color: rgba(87, 216, 255, 0.42);
+  border-color: rgba(255, 220, 122, 0.54);
   box-shadow:
-    0 18px 42px rgba(10, 33, 50, 0.18),
-    0 0 0 1px rgba(87, 216, 255, 0.15),
-    inset 0 0 0 1px rgba(87, 216, 255, 0.08);
+    0 18px 42px rgba(34, 26, 10, 0.16),
+    0 0 0 1px rgba(255, 220, 122, 0.18),
+    inset 0 0 0 1px rgba(255, 239, 189, 0.08);
+}
+
+.active-task .task-title,
+.active-task .task-state {
+  color: #ffe7a6;
 }
 
 .task-topline {
@@ -1256,6 +1288,22 @@ h1 {
   margin: 1rem 0 1.2rem;
 }
 
+.rescue-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.rescue-list-title {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: rgba(255, 239, 189, 0.98);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .rescued-names-list {
   display: flex;
   flex-wrap: wrap;
@@ -1396,6 +1444,10 @@ h1 {
   }
 
   .leadership-profiles-list {
+    grid-template-columns: 1fr;
+  }
+
+  .rescue-columns {
     grid-template-columns: 1fr;
   }
 
