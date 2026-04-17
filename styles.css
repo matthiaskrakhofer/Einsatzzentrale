@@ -365,11 +365,13 @@ body {
 }
 
 .storm-reminder {
-  grid-column: 1;
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.9rem 0.95rem;
-  border-radius: 22px;
+  position: fixed;
+  left: 1.25rem;
+  top: 340px;
+  z-index: 14;
+  width: 230px;
+  padding: 0.7rem 0.8rem;
+  border-radius: 18px;
   background: linear-gradient(145deg, rgba(255, 223, 122, 0.95), rgba(255, 136, 88, 0.94));
   color: #2c1300;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
@@ -1211,11 +1213,10 @@ h1 {
     grid-column: 1;
   }
 
-  .leadership-profiles,
-  .storm-reminder {
-    position: static;
-    width: 100%;
-  }
+ .leadership-profiles {
+  position: static;
+  width: 100%;
+}
 
   .map-panel {
     grid-template-columns: 1fr;
