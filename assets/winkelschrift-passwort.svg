@@ -8,60 +8,71 @@
       .small { font: 600 12px Arial, sans-serif; fill: #9ab4c8; }
       .stroke { stroke: #eff6fb; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
       .dot { fill: #57d8ff; }
+      .tile { fill: #12293B; stroke: #2E627E; }
     </style>
 
+    <!-- A = ┘ -->
     <symbol id="pig-a" viewBox="0 0 44 44">
-      <path class="stroke" d="M36 8H8V36" />
+      <path class="stroke" d="M36 8V36H8" />
     </symbol>
-    <symbol id="pig-b" viewBox="0 0 44 44">
-      <path class="stroke" d="M8 36V8H36V36" />
-    </symbol>
-    <symbol id="pig-c" viewBox="0 0 44 44">
-      <path class="stroke" d="M8 8H36V36" />
-    </symbol>
+
+    <!-- D = top + right + bottom -->
     <symbol id="pig-d" viewBox="0 0 44 44">
-      <path class="stroke" d="M36 8H8V36H36" />
-    </symbol>
-    <symbol id="pig-e" viewBox="0 0 44 44">
-      <path class="stroke" d="M8 8H36V36H8V8" />
-    </symbol>
-    <symbol id="pig-f" viewBox="0 0 44 44">
       <path class="stroke" d="M8 8H36V36H8" />
     </symbol>
-    <symbol id="pig-g" viewBox="0 0 44 44">
-      <path class="stroke" d="M8 8V36H36" />
+
+    <!-- E = square -->
+    <symbol id="pig-e" viewBox="0 0 44 44">
+      <path class="stroke" d="M8 8H36V36H8V8Z" />
     </symbol>
+
+    <!-- F = top + left + bottom -->
+    <symbol id="pig-f" viewBox="0 0 44 44">
+      <path class="stroke" d="M36 8H8V36H36" />
+    </symbol>
+
+    <!-- H = top + left + right -->
     <symbol id="pig-h" viewBox="0 0 44 44">
-      <path class="stroke" d="M8 8V36H36V8" />
+      <path class="stroke" d="M8 36V8H36V36" />
     </symbol>
+
+    <!-- I = ┌ -->
     <symbol id="pig-i" viewBox="0 0 44 44">
-      <path class="stroke" d="M8 36H36V8" />
+      <path class="stroke" d="M36 8H8V36" />
     </symbol>
-    <symbol id="pig-j" viewBox="0 0 44 44">
-      <use href="#pig-a" />
-      <circle class="dot" cx="28" cy="28" r="3.5" />
-    </symbol>
+
+    <!-- N = square + dot -->
     <symbol id="pig-n" viewBox="0 0 44 44">
       <use href="#pig-e" />
       <circle class="dot" cx="22" cy="22" r="3.5" />
     </symbol>
+
+    <!-- O = F + dot -->
     <symbol id="pig-o" viewBox="0 0 44 44">
       <use href="#pig-f" />
-      <circle class="dot" cx="16" cy="22" r="3.5" />
+      <circle class="dot" cx="18" cy="22" r="3.5" />
     </symbol>
+
+    <!-- P = G + dot -->
     <symbol id="pig-p" viewBox="0 0 44 44">
-      <use href="#pig-g" />
+      <path class="stroke" d="M8 8H36V36" />
       <circle class="dot" cx="28" cy="16" r="3.5" />
     </symbol>
+
+    <!-- R = I + dot -->
     <symbol id="pig-r" viewBox="0 0 44 44">
       <use href="#pig-i" />
       <circle class="dot" cx="16" cy="16" r="3.5" />
     </symbol>
+
+    <!-- T = > -->
     <symbol id="pig-t" viewBox="0 0 44 44">
-      <path class="stroke" d="M9 9L35 22L9 35" transform="rotate(180 22 22)" />
+      <path class="stroke" d="M10 10L32 22L10 34" />
     </symbol>
+
+    <!-- Z = ^ + dot -->
     <symbol id="pig-z" viewBox="0 0 44 44">
-      <path class="stroke" d="M9 35L22 9L35 35" />
+      <path class="stroke" d="M10 34L22 10L34 34" />
       <circle class="dot" cx="22" cy="22" r="3.5" />
     </symbol>
   </defs>
@@ -79,54 +90,66 @@
 
   <rect x="42" y="262" width="876" height="240" rx="18" fill="#0A1824" stroke="#284F66"/>
 
-  <g transform="translate(92 314)">
-    <rect x="0" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-r" x="14" y="14" width="44" height="44"/>
-    <rect x="88" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-o" x="102" y="14" width="44" height="44"/>
-    <rect x="176" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-t" x="190" y="14" width="44" height="44"/>
-    <rect x="264" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-e" x="278" y="14" width="44" height="44"/>
-    <rect x="352" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-r" x="366" y="14" width="44" height="44"/>
-    <rect x="440" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-p" x="454" y="14" width="44" height="44"/>
-    <rect x="528" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-a" x="542" y="14" width="44" height="44"/>
+  <!-- Zeile 1: r o t e r p a -->
+  <g transform="translate(92 300)">
+    <rect class="tile" x="0"   y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-r" x="12" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="78"  y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-o" x="90" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="156" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-t" x="168" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="234" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-e" x="246" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="312" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-r" x="324" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="390" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-p" x="402" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="468" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-a" x="480" y="12" width="40" height="40"/>
   </g>
 
-  <g transform="translate(92 406)">
-    <rect x="0" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-n" x="14" y="14" width="44" height="44"/>
-    <rect x="88" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-d" x="102" y="14" width="44" height="44"/>
-    <rect x="176" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-a" x="190" y="14" width="44" height="44"/>
-    <rect x="264" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-n" x="278" y="14" width="44" height="44"/>
-    <rect x="352" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-d" x="366" y="14" width="44" height="44"/>
-    <rect x="440" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-a" x="454" y="14" width="44" height="44"/>
+  <!-- Zeile 2: n d a d r e i -->
+  <g transform="translate(92 378)">
+    <rect class="tile" x="0"   y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-n" x="12" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="78"  y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-d" x="90" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="156" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-a" x="168" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="234" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-d" x="246" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="312" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-r" x="324" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="390" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-e" x="402" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="468" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-i" x="480" y="12" width="40" height="40"/>
   </g>
 
-  <g transform="translate(532 360)">
-    <rect x="0" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-d" x="14" y="14" width="44" height="44"/>
-    <rect x="88" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-r" x="102" y="14" width="44" height="44"/>
-    <rect x="176" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-e" x="190" y="14" width="44" height="44"/>
-    <rect x="264" y="0" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-i" x="278" y="14" width="44" height="44"/>
-    <rect x="88" y="92" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-z" x="102" y="106" width="44" height="44"/>
-    <rect x="176" y="92" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-e" x="190" y="106" width="44" height="44"/>
-    <rect x="264" y="92" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-h" x="278" y="106" width="44" height="44"/>
-    <rect x="352" y="92" width="72" height="72" rx="16" fill="#12293B" stroke="#2E627E"/>
-    <use href="#pig-n" x="366" y="106" width="44" height="44"/>
+  <!-- Zeile 3: z e h n -->
+  <g transform="translate(292 456)">
+    <rect class="tile" x="0"   y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-z" x="12" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="78"  y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-e" x="90" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="156" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-h" x="168" y="12" width="40" height="40"/>
+
+    <rect class="tile" x="234" y="0" width="64" height="64" rx="16"/>
+    <use href="#pig-n" x="246" y="12" width="40" height="40"/>
   </g>
 </svg>
