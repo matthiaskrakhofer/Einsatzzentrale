@@ -1,18 +1,18 @@
 <svg width="841" height="595" viewBox="0 0 841 595" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="841" height="595" rx="24" fill="#091722"/>
-  <image href="Karte_Harrachpark1.png" width="595" height="841" transform="translate(0 595) rotate(-90)"/>
+  <image href="Karte_Nordschweden.png" width="595" height="841" transform="translate(0 595) rotate(-90)"/>
 
   <rect x="18" y="18" width="250" height="118" rx="18" fill="rgba(6,18,29,0.88)" stroke="#1c465e" stroke-width="2"/>
-  <text x="36" y="52" fill="#eff6fb" font-family="Arial, sans-serif" font-size="26" font-weight="700">Einsatzkarte Harrachpark</text>
-  <text x="36" y="82" fill="#9ab4c8" font-family="Arial, sans-serif" font-size="18">Gedrehte Karte mit Rueckweg</text>
-  <text x="36" y="108" fill="#9ab4c8" font-family="Arial, sans-serif" font-size="18">und Versorgungspunkten</text>
+  <text x="36" y="52" fill="#eff6fb" font-family="Arial, sans-serif" font-size="26" font-weight="700">Einsatzkarte Nordschweden</text>
+  <text x="36" y="82" fill="#9ab4c8" font-family="Arial, sans-serif" font-size="18">Rueckweg durch die Wildnis</text>
+  <text x="36" y="108" fill="#9ab4c8" font-family="Arial, sans-serif" font-size="18">mit Versorgungspunkten</text>
 
   <path d="M686 450C648 430 608 405 575 390C535 370 505 345 476 320C444 292 402 268 362 248C320 226 274 205 237 180C203 157 171 133 130 108" stroke="#ff6b57" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M686 450L667 439L678 420" stroke="#ff6b57" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M130 108L149 117L139 136" stroke="#89f7ad" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
 
   <circle cx="130" cy="108" r="18" fill="#89f7ad" stroke="#07131f" stroke-width="4"/>
-  <text x="159" y="114" fill="#eff6fb" font-family="Arial, sans-serif" font-size="20" font-weight="700">Rettungsbasis</text>
+  <text x="159" y="114" fill="#eff6fb" font-family="Arial, sans-serif" font-size="20" font-weight="700">Ziel Richtung Zivilisation</text>
 
   <circle cx="686" cy="450" r="18" fill="#57d8ff" stroke="#07131f" stroke-width="4"/>
   <text x="715" y="456" fill="#eff6fb" font-family="Arial, sans-serif" font-size="20" font-weight="700">Start / Gruppe</text>
@@ -34,7 +34,7 @@
 
   <rect x="18" y="455" width="265" height="122" rx="18" fill="rgba(6,18,29,0.88)" stroke="#1c465e" stroke-width="2"/>
   <circle cx="46" cy="488" r="10" fill="#ff6b57"/>
-  <text x="66" y="494" fill="#eff6fb" font-family="Arial, sans-serif" font-size="18">Rueckweg zur Rettungsbasis</text>
+  <text x="66" y="494" fill="#eff6fb" font-family="Arial, sans-serif" font-size="18">Rueckweg Richtung Zivilisation</text>
   <circle cx="46" cy="520" r="10" fill="#89f7ad"/>
   <text x="66" y="526" fill="#eff6fb" font-family="Arial, sans-serif" font-size="18">Erste Hilfe / Zielpunkt</text>
   <circle cx="46" cy="552" r="10" fill="#ffdc7a"/>

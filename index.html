@@ -17,10 +17,30 @@
     <section class="overlay-panel">
       <p class="eyebrow">Geschuetzter Zugriff</p>
       <h1>Einsatzleitungszentrale</h1>
-      <p class="overlay-text">
-        Passwort eingeben, um die Leitstelle zu oeffnen.
-      </p>
-      <form id="passwordForm" class="overlay-form">
+      <div id="prelockPanel">
+        <p class="overlay-text">
+          Entschluessle zuerst die Winkelschrift. Wenn der Schluessel unbekannt ist, erhaelt ihn die Einsatzleitung vom Sicherheitsoffizier.
+        </p>
+        <div class="task-clue">
+          <strong>Hinweis</strong>
+          <span id="prelockHint">
+            Das Loesungswort ist ausgeschrieben. Fuer das Passwort alles klein schreiben und die Zahl als Ziffer verwenden.
+          </span>
+        </div>
+
+        <div class="pigpen-panel" aria-label="Winkelschrift">
+          <p class="pigpen-label">Winkelschrift</p>
+          <img
+            class="pigpen-graphic"
+            src="assets/winkelschrift-passwort.svg"
+            alt="Winkelschrift-Tafel mit Schluessel und verschluesseltem Wort roterpandadreizehn"
+          >
+        </div>
+
+        <button id="prelockButton" type="button" class="solve-button">Passwort eingeben</button>
+      </div>
+
+      <form id="passwordForm" class="overlay-form hidden">
         <label>
           <span>Passwort</span>
           <input id="passwordInput" type="password" autocomplete="current-password" required>
@@ -31,16 +51,34 @@
     </section>
   </div>
 
+  <div id="leadershipPopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel">
+      <p class="eyebrow">Einsatzleitung</p>
+      <h2>Team eintragen</h2>
+      <p class="overlay-text">
+        Trage die Namen der Einsatzleitung ein. Es koennen 1 bis 5 Personen mitspielen. Mehrere Namen bitte mit Komma trennen.
+      </p>
+      <form id="leadershipForm" class="overlay-form">
+        <label>
+          <span>Namen der Einsatzleitung</span>
+          <input id="leadershipInput" type="text" autocomplete="off" placeholder="z. B. Anna, Ben, Lea, Omar, Eva" required>
+        </label>
+        <button id="leadershipButton" type="submit" class="solve-button">Team bestaetigen</button>
+      </form>
+      <p id="leadershipFeedback" class="task-feedback" aria-live="polite"></p>
+    </section>
+  </div>
+
   <div id="carePopup" class="overlay-screen hidden">
     <section class="overlay-panel care-popup-panel">
       <p class="eyebrow">Phase 1</p>
       <h2 id="carePopupTitle">Erste Hilfe</h2>
       <p id="carePopupText" class="overlay-text">
-        Hilf den Passagieren, die Erste Hilfe zu finden.
+        Hilf den GuSp, die Erste Hilfe zu finden.
       </p>
       <form id="carePopupForm" class="overlay-form">
         <label>
-          <span id="carePopupLabel">Wie viele Passagiere wurden versorgt?</span>
+          <span id="carePopupLabel">Wie viele GuSp wurden versorgt?</span>
           <input id="carePopupInput" type="number" min="0" max="999" required>
         </label>
         <button id="carePopupButton" type="submit" class="solve-button">Bestaetigen</button>
@@ -56,13 +94,123 @@
       <p class="overlay-text">
         Vor Phase 2 muss die Sturmwarnung beachtet werden.
       </p>
+      <div class="radar-block">
+        <div class="weather-radar large-radar" aria-hidden="true">
+          <span class="radar-ring radar-ring-one"></span>
+          <span class="radar-ring radar-ring-two"></span>
+          <span class="radar-ring radar-ring-three"></span>
+          <span class="radar-sweep"></span>
+          <span class="radar-blip radar-blip-one"></span>
+          <span class="radar-blip radar-blip-two"></span>
+          <span class="radar-blip radar-blip-three"></span>
+        </div>
+        <div class="radar-copy">
+          <strong>Wetterradar aktiv</strong>
+          <p>Beobachte den Sturm waehrend des Heimwegs laufend mit dem zweiten Laptop.</p>
+        </div>
+      </div>
       <div class="warning-box">
         <strong>Warnung</strong>
-        <p>Bitte den Sicherheitsoffizier um einen zweiten Laptop und eine Einschulung.</p>
-        <p>Den Standort des Sturms kannst du live verfolgen.</p>
-        <p>Kommt der Sturm den Passagieren zu nahe, faellt der Funkkontakt aus und Passagiere koennen Schaden davontragen.</p>
+        <p id="weatherPopupTextA">Bitte den Sicherheitsoffizier um einen zweiten Laptop und eine Einschulung.</p>
+        <p id="weatherPopupTextB">Mit dem zweiten Laptop behaltet ihr den Sturm waehrend des Rueckwegs im Blick.</p>
+        <p>Kommt der Sturm den GuSp zu nahe, faellt der Funkkontakt aus und die GuSp koennen Schaden davontragen.</p>
       </div>
       <button id="weatherPopupButton" type="button" class="solve-button">Sturmwarnung verstanden</button>
+    </section>
+  </div>
+
+  <div id="wildlifePopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel wildlife-popup-panel">
+      <p class="eyebrow">Wildtiersichtung</p>
+      <h2>Braunbaer gesichtet</h2>
+      <p class="overlay-text">
+        Bis die Wildtieraufsicht vor Ort ist, spielt ihr die Szene <strong>Braunbaer versus GuSp</strong>.
+      </p>
+      <div class="warning-box">
+        <strong>Sofortmassnahme</strong>
+        <p>Ruft die Wildtieraufsicht an, sobald die Telefonnummer ermittelt wurde.</p>
+        <p>Die Telefonnummer wird ueber das folgende Raetsel freigeschaltet.</p>
+      </div>
+      <div class="task-clue">
+        <strong>Einsatzlogbuch</strong>
+        <span id="wildlifePuzzleLog">Die Telefonnummer ist noch verschluesselt.</span>
+      </div>
+      <button id="wildlifeDecryptButton" type="button" class="solve-button">Entschluesselung des Einsatzlogbuches</button>
+
+      <article id="wildlifeContactCard" class="contact-card hidden">
+        <img
+          class="contact-photo"
+          src="assets/wildtieraufsicht-kontakt.svg"
+          alt="Kontaktfoto der Wildtieraufsicht"
+        >
+        <div class="contact-copy">
+          <p class="contact-role">Wildtieraufsicht Nord</p>
+          <h3>Direktkontakt Einsatz</h3>
+          <p class="contact-phone">0670 209 6205</p>
+          <p class="contact-note">Wildtiersichtung melden, Standort nennen und auf weitere Anweisung warten.</p>
+        </div>
+      </article>
+
+      <div id="wildlifeFollowup" class="checklist hidden">
+        <label class="check-item">
+          <input id="wildlifeContactCheck" type="checkbox">
+          <span>Wildtieraufsicht erfolgreich kontaktiert?</span>
+        </label>
+        <label class="check-item">
+          <input id="wildlifeClearCheck" type="checkbox">
+          <span>Keine Gefahr mehr durch Wildtier?</span>
+        </label>
+      </div>
+
+      <button id="wildlifePopupButton" type="button" class="ghost-button">Schliessen</button>
+    </section>
+  </div>
+
+  <div id="wildlifeCipherPopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel wildlife-popup-panel logbook-panel">
+      <p class="eyebrow">Einsatzlogbuch</p>
+      <div class="logbook-header">
+        <span class="logbook-stamp">Verschluesselt</span>
+        <span class="logbook-meta">Datei WT-17 / Leitstelle Nord</span>
+      </div>
+      <article class="logbook-sheet">
+        <h2 id="wildlifeCipherTitle">1. Ziffer</h2>
+        <p id="wildlifeCipherText" class="overlay-text">
+          Die erste Ziffer wird entsperrt.
+        </p>
+        <form id="wildlifeCipherForm" class="overlay-form">
+          <label>
+            <span>Ziffer eingeben</span>
+            <input id="wildlifeCipherInput" type="number" min="0" max="9" inputmode="numeric" required>
+          </label>
+          <button id="wildlifeCipherButton" type="submit" class="solve-button">Ziffer pruefen</button>
+        </form>
+        <p id="wildlifeCipherAttempts" class="task-feedback" aria-live="polite"></p>
+        <p id="wildlifeCipherFeedback" class="task-feedback" aria-live="polite"></p>
+      </article>
+    </section>
+  </div>
+
+  <div id="quicksandPopup" class="overlay-screen hidden">
+    <section class="overlay-panel care-popup-panel weather-popup-panel">
+      <p class="eyebrow">Letzte Warnung</p>
+      <h2>Treibsand-Gefahr</h2>
+      <p class="overlay-text">
+        Die GuSp sind auf Treibsand getroffen. Beobachte genau, wo der Gefahrenbereich liegt, bevor sie weitergehen.
+      </p>
+      <article class="location-card">
+        <img
+          class="location-map"
+          src="assets/treibsand-standort.svg"
+          alt="Standortkarte mit markierter Treibsand-Gefahr"
+        >
+        <div class="location-copy">
+          <strong>Standort freigeschaltet</strong>
+          <p>Westlich des Rueckwegs liegt eine feuchte Senke mit Treibsand.</p>
+          <p>Fuehre die GuSp auf der markierten trockenen Route am Gefahrenbereich vorbei.</p>
+        </div>
+      </article>
+      <button id="quicksandPopupButton" type="button" class="solve-button">Standort verstanden</button>
     </section>
   </div>
 
@@ -70,37 +218,90 @@
     <section class="overlay-panel care-popup-panel">
       <p class="eyebrow">Status</p>
       <h2>Phase 1 abgeschlossen</h2>
-      <p class="overlay-text">
-        Alle Passagiere wurden versorgt. Der Rueckweg kann jetzt vorbereitet werden.
+      <p id="phaseOnePopupText" class="overlay-text">
+        Alle GuSp wurden versorgt. Der Rueckweg kann jetzt vorbereitet werden.
       </p>
       <button id="phaseOnePopupButton" type="button" class="solve-button">Bestaetigen</button>
     </section>
   </div>
 
   <main id="app" class="dashboard hidden">
+    <aside id="leadershipProfiles" class="leadership-profiles hidden">
+      <strong>Einsatzleitung</strong>
+      <p id="leadershipCommandText" class="leadership-command-text">Kommandofuehrung wird zugewiesen.</p>
+      <div id="leadershipProfilesList" class="leadership-profiles-list"></div>
+    </aside>
+
     <aside id="stormReminder" class="storm-reminder hidden">
       <strong>Sturmwarnung</strong>
-      <p>Sturm im Blick behalten. In Sturmnaehe faellt der Funk aus.</p>
+      <div class="storm-radar-row">
+        <div class="weather-radar small-radar" aria-hidden="true">
+          <span class="radar-ring radar-ring-one"></span>
+          <span class="radar-ring radar-ring-two"></span>
+          <span class="radar-sweep"></span>
+          <span class="radar-blip radar-blip-one"></span>
+          <span class="radar-blip radar-blip-two"></span>
+        </div>
+        <span class="storm-radar-label">Radar aktiv</span>
+      </div>
+      <p id="stormReminderText">Sturm mit dem zweiten Laptop im Blick behalten. In Sturmnaehe faellt der Funk aus.</p>
     </aside>
 
     <section class="hero">
       <p class="eyebrow">Notfallprotokoll Alpha-7</p>
       <h1>Einsatzleitungszentrale</h1>
       <p class="hero-text">
-        Flugzeugabsturz im Harrach-Wald. Fuehre alle Passagiere sicher zur Rettungsstation.
+        <span id="heroAddress">Einsatzleitung</span>, ein Flug mit GuSp nach Nordschweden endet tief in der Wildnis. Ab jetzt fuehrt ihr die Rettungsmission.
       </p>
+
+      <section class="prologue-panel" aria-label="Vorgeschichte">
+        <div class="prologue-header">
+          <span class="prologue-tag">Vorgeschichte</span>
+          <span class="prologue-loop">Laufende Einsatzlage</span>
+        </div>
+        <div class="prologue-stage">
+          <article class="prologue-scene">
+            <p class="prologue-scene-label">01 Start in Wien</p>
+            <h3>Die Reise beginnt ruhig</h3>
+            <p>
+              Die GuSp treffen sich am Flughafen Wien und steigen in eine kleine Propellermaschine. Ziel ist ein entlegenes Dorf im Norden von Schweden.
+            </p>
+          </article>
+          <article class="prologue-scene">
+            <p class="prologue-scene-label">02 Ueber Schweden</p>
+            <h3>Unter euch nur Wald</h3>
+            <p>
+              Stunde um Stunde zieht die schwedische Wildnis unter dem Flieger vorbei. Die Vorfreude auf das Treffen mit der schwedischen Gruppe waechst.
+            </p>
+          </article>
+          <article class="prologue-scene">
+            <p class="prologue-scene-label alarm-label">03 Alarm</p>
+            <h3>Dann kippt die Lage</h3>
+            <p>
+              Ein Alarm piepst. Flugbegleiterinnen werden hektisch, die Maschine bebt und in der Kabine breitet sich Panik aus.
+            </p>
+          </article>
+          <article class="prologue-scene">
+            <p class="prologue-scene-label crash-label">04 Absturz</p>
+            <h3>Es wird ploetzlich still</h3>
+            <p>
+              Ein letzter harter Ruck. Dann Stille. Die Maschine ist mitten in der schwedischen Wildnis abgestuerzt und die GuSp brauchen sofort Hilfe.
+            </p>
+          </article>
+        </div>
+      </section>
 
       <div class="status-grid">
         <article class="status-card">
-          <span class="status-label">Abgestuerzte Personen</span>
+          <span class="status-label">Personen an Bord</span>
           <strong id="totalPassengers">Unbekannt</strong>
         </article>
         <article class="status-card">
-          <span class="status-label">Versorgte Passagiere</span>
+          <span class="status-label">Versorgte GuSp</span>
           <strong id="suppliedPassengers">0</strong>
         </article>
         <article class="status-card">
-          <span class="status-label">Auf dem Weg zur Basis</span>
+          <span class="status-label">Gerettete Personen</span>
           <strong id="returningPassengers">0</strong>
         </article>
         <article class="status-card">
@@ -115,7 +316,7 @@
 
       <div class="progress-block">
         <div class="progress-meta">
-          <span>Rueckfuehrung zur Rettungsbasis</span>
+          <span>Rueckweg Richtung Zivilisation</span>
           <span id="progressLabel">0%</span>
         </div>
         <div class="progress-bar">
@@ -128,7 +329,7 @@
       <div class="mission-header">
         <div>
           <p class="eyebrow">Mission</p>
-          <h2>Passagiere durch den Harrach-Wald fuehren</h2>
+          <h2>GuSp durch die schwedische Wildnis fuehren</h2>
         </div>
         <button id="resetButton" class="ghost-button" type="button">Mission zuruecksetzen</button>
       </div>
@@ -169,7 +370,7 @@
           </div>
           <h3 class="task-title">Pilot befragen</h3>
           <p class="task-story">
-            Frage den Piloten, wie viele Passagiere an Bord waren.
+            Frage den Piloten, wie viele GuSp und wie viele Besatzungsmitglieder an Bord waren.
           </p>
 
           <div class="task-clue">
@@ -181,8 +382,12 @@
 
           <form id="passengerForm" class="overlay-form inline-form">
             <label>
-              <span>Wie viele Passagiere waren an Bord?</span>
+              <span>Wie viele GuSp waren an Bord?</span>
               <input id="passengerInput" type="number" min="1" max="999" required>
+            </label>
+            <label>
+              <span>Wie viele Besatzungsmitglieder waren an Bord?</span>
+              <input id="crewInput" type="number" min="1" max="99" required>
             </label>
             <button id="confirmPassengersButton" class="solve-button" type="submit" disabled>Anzahl bestaetigen</button>
           </form>
@@ -197,7 +402,7 @@
           </div>
           <h3 class="task-title">Phase 1: Versorgung</h3>
           <p class="task-story">
-            Versorge die Passagiere in drei Schritten: Erste Hilfe, Nahrung, Waerme.
+            Versorge die GuSp in drei Schritten: Erste Hilfe, Nahrung, Waerme.
           </p>
 
           <div class="task-clue">
@@ -248,7 +453,7 @@
           </div>
           <h3 class="task-title">Zum Grenzfluss leiten</h3>
           <p class="task-story">
-            Leite die Passagiere zum Grenzfluss. Der Weg ist auf der Rueckweg-Karte markiert.
+            Leite die GuSp zum Grenzfluss. Der Weg ist auf der Rueckweg-Karte markiert.
           </p>
 
           <div class="task-clue">
@@ -269,7 +474,7 @@
           </div>
           <h3 class="task-title">Verschluesselte Mail</h3>
           <p class="task-story">
-            Entschluessle die Mail in Morsecode und gib den Satz an die Passagiere weiter.
+            Entschluessle die Mail in Morsecode und gib den Satz an die GuSp weiter.
           </p>
 
           <div class="mail-card">
@@ -284,12 +489,13 @@
             </div>
           </div>
 
-          <div class="task-clue">
-            <strong>Bestaetigung:</strong>
-            <span>Wurde die Mail erfolgreich entschluesselt und per Funk weitergegeben?</span>
-          </div>
-
-          <button id="finalButton" class="solve-button" type="button" disabled>Uebersetzung bestaetigen</button>
+          <form id="finalForm" class="overlay-form inline-form">
+            <label>
+              <span>Welchen Satz muessen die GuSp dem Waechter sagen?</span>
+              <input id="finalAnswerInput" type="text" autocomplete="off" placeholder="Nachricht eingeben">
+            </label>
+            <button id="finalButton" class="solve-button" type="submit" disabled>Mail entschluesseln</button>
+          </form>
           <p id="finalFeedback" class="task-feedback" aria-live="polite"></p>
         </article>
 
@@ -298,18 +504,119 @@
             <span class="task-badge">Phase 2</span>
             <span id="returnState" class="task-state">Gesperrt</span>
           </div>
-          <h3 class="task-title">Grenzfluss ueberqueren</h3>
+          <h3 class="task-title">Bruecke ueberqueren</h3>
           <p class="task-story">
-            Wenn der Waechter den Satz gehoert hat, koennen die Passagiere den Grenzfluss ueberqueren.
+            Wenn der Waechter den Satz gehoert hat, koennen die GuSp die schmale Bruecke ueber den Grenzfluss ueberqueren.
           </p>
 
           <div class="task-clue">
             <strong>Status:</strong>
-            <span id="returnLog">Die Passagiere warten auf die entschluesselte Mail.</span>
+            <span id="returnLog">Die GuSp warten auf die entschluesselte Mail.</span>
           </div>
 
-          <button id="returnButton" class="solve-button" type="button" disabled>Grenzfluss ueberquert</button>
+          <button id="returnButton" class="solve-button" type="button" disabled>Bruecke ueberquert</button>
           <p id="returnFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card phase-card" data-phase="route">
+          <div class="task-topline">
+            <span class="task-badge">Phase 2</span>
+            <span id="routeState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Heimweg Richtung Zivilisation</h3>
+          <p class="task-story">
+            Empfehlung: Fuehre die GuSp entlang der vorgeschlagenen Route weiter Richtung Zivilisation.
+          </p>
+
+          <div class="task-clue">
+            <strong>Empfehlung:</strong>
+            <span id="routeLog">
+              Nach der Bruecke folgt ihr der vorgeschlagenen Route weiter Richtung Zivilisation.
+            </span>
+          </div>
+
+          <div class="warning-box">
+            <strong>Achtung</strong>
+            <p>Achte weiter auf das Wetter und auf Wildtiere.</p>
+            <p>Sollten Wildtiere gesichtet werden, druecke sofort den Knopf Wildtiersichtung.</p>
+          </div>
+
+          <div class="warning-box">
+            <strong>Letzte Warnung</strong>
+            <p>Achte auf Treibsand.</p>
+            <p>Schalte den Standort frei, um zu sehen, wo Treibsand zur Gefahr wird.</p>
+          </div>
+
+          <div class="inline-actions">
+            <button id="quicksandButton" class="danger-button" type="button" disabled>Treibsand</button>
+            <button id="routeButton" class="solve-button" type="button" disabled>Zivilisation erreicht</button>
+            <button id="wildlifeButton" class="danger-button wildlife-button" type="button" disabled>Wildtiersichtung</button>
+          </div>
+
+          <div id="quicksandFollowup" class="checklist hidden">
+            <label class="check-item">
+              <input id="quicksandClearCheck" type="checkbox">
+              <span>Treibsand erfolgreich ueberquert?</span>
+            </label>
+          </div>
+          <p id="routeFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card phase-card" data-phase="phase2close">
+          <div class="task-topline">
+            <span class="task-badge">Phase 2</span>
+            <span id="phaseTwoState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Phase 2 abschliessen</h3>
+          <p class="task-story">
+            Die GuSp und die Besatzung haben die Zivilisation erreicht. Schliesse den Rueckweg offiziell ab.
+          </p>
+
+          <div class="task-clue">
+            <strong>Status:</strong>
+            <span id="phaseTwoLog">
+              Sobald alle sicher in der Zivilisation angekommen sind, kann Phase 2 abgeschlossen werden.
+            </span>
+          </div>
+
+          <button id="phaseTwoButton" class="solve-button" type="button" disabled>Phase 2 abschliessen</button>
+          <p id="phaseTwoFeedback" class="task-feedback" aria-live="polite"></p>
+        </article>
+
+        <article class="task-card phase-card" data-phase="rescue">
+          <div class="task-topline">
+            <span class="task-badge">Abschluss</span>
+            <span id="rescueState" class="task-state">Gesperrt</span>
+          </div>
+          <h3 class="task-title">Gerettete einzeln erfassen</h3>
+          <p class="task-story">
+            Trage die Vornamen aller Geretteten einzeln ein. So seht ihr, ob alle GuSp und die Besatzung zurueck sind.
+          </p>
+
+          <div class="task-clue">
+            <strong>Abgleich:</strong>
+            <span id="rescueLog">
+              Phase 2 muss zuerst abgeschlossen werden.
+            </span>
+          </div>
+
+          <form id="rescueForm" class="overlay-form inline-form">
+            <label>
+              <span>Vorname einer geretteten Person</span>
+              <input id="rescueNameInput" type="text" autocomplete="off" placeholder="Vorname eingeben">
+            </label>
+            <button id="rescueNameButton" class="solve-button" type="submit" disabled>Namen eintragen</button>
+          </form>
+
+          <div id="rescuedNamesList" class="rescued-names-list"></div>
+          <p id="rescueFeedback" class="task-feedback" aria-live="polite"></p>
+
+          <div id="missionCompleteCard" class="task-clue hidden">
+            <strong>Mission erfolgreich abgeschlossen</strong>
+            <span id="missionCompleteText">
+              Gratulation. Alle Geretteten sind in Sicherheit.
+            </span>
+          </div>
         </article>
 
       </div>

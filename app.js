@@ -1,20 +1,70 @@
-const PASSWORD = "RoterPanda25";
-const STORAGE_KEY = "einsatzleitungszentrale-v9";
+const PASSWORD = "roterpanda13";
+const STORAGE_KEY = "einsatzleitungszentrale-v12";
 const MORSE_EMAIL_PLAIN = "Erzaehle dem Waechter folgenden Witz: Faehrt ein Panda ueber die Strasse - BamBus";
 const MORSE_EMAIL_CODE = ". .-. --.. .- . .... .-.. . / -.. . -- / .-- .- . -.-. .... - . .-. / ..-. --- .-.. --. . -. -.. . -. / .-- .. - --.. ---... / ..-. .- . .... .-. - / . .. -. / .--. .- -. -.. .- / ..- . -... . .-. / -.. .. . / ... - .-. .- ... ... . / -....- / -... .- -- -... ..- ...";
+const WILDLIFE_PHONE = "06702096205";
+const WILDLIFE_DIGITS = [
+  { title: "1. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
+  { title: "2. Ziffer", clue: "Anzahl der Todsuenden minus 1", answer: "6" },
+  { title: "3. Ziffer", clue: "Anzahl der Zwerge", answer: "7" },
+  { title: "4. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
+  { title: "5. Ziffer", clue: "Anzahl der Finger einer Hand minus 3", answer: "2" },
+  { title: "6. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
+  { title: "7. Ziffer", clue: "Anzahl der Katzenleben laut Mythos", answer: "9" },
+  { title: "8. Ziffer", clue: "Anzahl der Zwerge minus 1", answer: "6" },
+  { title: "9. Ziffer", clue: "Anzahl der Katzenleben minus 7", answer: "2" },
+  { title: "10. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
+  { title: "11. Ziffer", clue: "Anzahl der Finger einer Hand", answer: "5" }
+];
 
 const CARE_STEPS = [
-  { key: "aid", title: "Erste Hilfe", text: "Hilf den Passagieren, die Erste Hilfe zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Erste Hilfe abgeschlossen." },
-  { key: "food", title: "Nahrung", text: "Hilf den Passagieren, Nahrung zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Nahrung abgeschlossen." },
-  { key: "warmth", title: "Waerme", text: "Hilf den Passagieren, Waerme zu finden.", label: "Wie viele Passagiere wurden versorgt?", done: "Waerme abgeschlossen." }
+  { key: "aid", title: "Erste Hilfe", text: "Hilf den GuSp, die Erste Hilfe zu finden.", label: "Wie viele GuSp wurden versorgt?", done: "Erste Hilfe abgeschlossen." },
+  { key: "food", title: "Nahrung", text: "Hilf den GuSp, Nahrung zu finden.", label: "Wie viele GuSp wurden versorgt?", done: "Nahrung abgeschlossen." },
+  { key: "warmth", title: "Waerme", text: "Hilf den GuSp, Waerme zu finden.", label: "Wie viele GuSp wurden versorgt?", done: "Waerme abgeschlossen." }
+];
+
+const LEADERSHIP_JOBS = [
+  "Berufsfeuerwehr",
+  "Rettungsdienst",
+  "Polizei",
+  "Bergrettung",
+  "Zivilschutz",
+  "Luftrettung",
+  "Katastrophenschutz",
+  "Geheimdienst",
+  "Krisenstab",
+  "Sondereinsatzkoordination"
+];
+
+const LEADERSHIP_ROLES = [
+  "Funkleitung",
+  "Lagebild",
+  "Wetterlage",
+  "Sicherheitsfreigabe",
+  "Routenkoordination",
+  "Verbindung Sicherheitsoffizier",
+  "Dokumentation",
+  "Gefahrenanalyse",
+  "Tierlage",
+  "Entscheidungsfreigabe"
 ];
 
 const lockScreen = document.getElementById("lockScreen");
 const app = document.getElementById("app");
 const stormReminder = document.getElementById("stormReminder");
+const leadershipPopup = document.getElementById("leadershipPopup");
+const leadershipForm = document.getElementById("leadershipForm");
+const leadershipInput = document.getElementById("leadershipInput");
+const leadershipFeedback = document.getElementById("leadershipFeedback");
+const leadershipProfiles = document.getElementById("leadershipProfiles");
+const leadershipCommandText = document.getElementById("leadershipCommandText");
+const leadershipProfilesList = document.getElementById("leadershipProfilesList");
+const prelockPanel = document.getElementById("prelockPanel");
+const prelockButton = document.getElementById("prelockButton");
 const passwordForm = document.getElementById("passwordForm");
 const passwordInput = document.getElementById("passwordInput");
 const passwordFeedback = document.getElementById("passwordFeedback");
+const heroAddress = document.getElementById("heroAddress");
 
 const carePopup = document.getElementById("carePopup");
 const carePopupTitle = document.getElementById("carePopupTitle");
@@ -29,6 +79,27 @@ const phaseOnePopup = document.getElementById("phaseOnePopup");
 const phaseOnePopupButton = document.getElementById("phaseOnePopupButton");
 const weatherPopup = document.getElementById("weatherPopup");
 const weatherPopupButton = document.getElementById("weatherPopupButton");
+const weatherPopupTextA = document.getElementById("weatherPopupTextA");
+const weatherPopupTextB = document.getElementById("weatherPopupTextB");
+const wildlifePopup = document.getElementById("wildlifePopup");
+const wildlifePuzzleLog = document.getElementById("wildlifePuzzleLog");
+const wildlifeDecryptButton = document.getElementById("wildlifeDecryptButton");
+const wildlifeContactCard = document.getElementById("wildlifeContactCard");
+const wildlifeFollowup = document.getElementById("wildlifeFollowup");
+const wildlifeContactCheck = document.getElementById("wildlifeContactCheck");
+const wildlifeClearCheck = document.getElementById("wildlifeClearCheck");
+const wildlifePopupButton = document.getElementById("wildlifePopupButton");
+const wildlifeCipherPopup = document.getElementById("wildlifeCipherPopup");
+const wildlifeCipherTitle = document.getElementById("wildlifeCipherTitle");
+const wildlifeCipherText = document.getElementById("wildlifeCipherText");
+const wildlifeCipherForm = document.getElementById("wildlifeCipherForm");
+const wildlifeCipherInput = document.getElementById("wildlifeCipherInput");
+const wildlifeCipherButton = document.getElementById("wildlifeCipherButton");
+const wildlifeCipherAttempts = document.getElementById("wildlifeCipherAttempts");
+const wildlifeCipherFeedback = document.getElementById("wildlifeCipherFeedback");
+const quicksandPopup = document.getElementById("quicksandPopup");
+const quicksandPopupButton = document.getElementById("quicksandPopupButton");
+const phaseOnePopupText = document.getElementById("phaseOnePopupText");
 
 const totalPassengers = document.getElementById("totalPassengers");
 const suppliedPassengers = document.getElementById("suppliedPassengers");
@@ -45,11 +116,13 @@ const stormState = document.getElementById("stormState");
 const stormLog = document.getElementById("stormLog");
 const stormButton = document.getElementById("stormButton");
 const stormFeedback = document.getElementById("stormFeedback");
+const stormReminderText = document.getElementById("stormReminderText");
 
 const suppliesState = document.getElementById("suppliesState");
 const pilotLog = document.getElementById("pilotLog");
 const passengerForm = document.getElementById("passengerForm");
 const passengerInput = document.getElementById("passengerInput");
+const crewInput = document.getElementById("crewInput");
 const confirmPassengersButton = document.getElementById("confirmPassengersButton");
 const suppliesFeedback = document.getElementById("suppliesFeedback");
 const suppliesSuccess = document.getElementById("suppliesSuccess");
@@ -73,6 +146,8 @@ const treesFeedback = document.getElementById("treesFeedback");
 
 const finalState = document.getElementById("finalState");
 const finalLog = document.getElementById("finalLog");
+const finalForm = document.getElementById("finalForm");
+const finalAnswerInput = document.getElementById("finalAnswerInput");
 const finalButton = document.getElementById("finalButton");
 const finalFeedback = document.getElementById("finalFeedback");
 
@@ -81,13 +156,42 @@ const returnLog = document.getElementById("returnLog");
 const returnButton = document.getElementById("returnButton");
 const returnFeedback = document.getElementById("returnFeedback");
 
+const routeState = document.getElementById("routeState");
+const routeLog = document.getElementById("routeLog");
+const quicksandButton = document.getElementById("quicksandButton");
+const quicksandFollowup = document.getElementById("quicksandFollowup");
+const quicksandClearCheck = document.getElementById("quicksandClearCheck");
+const routeButton = document.getElementById("routeButton");
+const wildlifeButton = document.getElementById("wildlifeButton");
+const routeFeedback = document.getElementById("routeFeedback");
+
+const phaseTwoState = document.getElementById("phaseTwoState");
+const phaseTwoLog = document.getElementById("phaseTwoLog");
+const phaseTwoButton = document.getElementById("phaseTwoButton");
+const phaseTwoFeedback = document.getElementById("phaseTwoFeedback");
+
+const rescueState = document.getElementById("rescueState");
+const rescueLog = document.getElementById("rescueLog");
+const rescueForm = document.getElementById("rescueForm");
+const rescueNameInput = document.getElementById("rescueNameInput");
+const rescueNameButton = document.getElementById("rescueNameButton");
+const rescueFeedback = document.getElementById("rescueFeedback");
+const rescuedNamesList = document.getElementById("rescuedNamesList");
+const missionCompleteCard = document.getElementById("missionCompleteCard");
+const missionCompleteText = document.getElementById("missionCompleteText");
+
 const resetButton = document.getElementById("resetButton");
+let prelockReady = false;
 
 function defaultState() {
   return {
     unlocked: false,
+    leadershipConfirmed: false,
+    leadershipNames: [],
+    leadershipProfiles: [],
     radioKitReady: false,
     passengerCount: null,
+    crewCount: null,
     healed: { aid: null, food: null, warmth: null },
     activeCareStep: null,
     phaseOneAcknowledged: false,
@@ -96,7 +200,21 @@ function defaultState() {
     returnStarted: false,
     treesCleared: false,
     mailSolved: false,
-    riverCrossed: false
+    riverCrossed: false,
+    routeConfirmed: false,
+    wildlifeAlerted: false,
+    wildlifeBriefed: false,
+    wildlifePhoneUnlocked: false,
+    wildlifeCipherOpen: false,
+    wildlifeDigitIndex: 0,
+    wildlifeDigitAttemptsLeft: 3,
+    wildlifeContactConfirmed: false,
+    wildlifeDangerCleared: false,
+    quicksandUnlocked: false,
+    quicksandViewed: false,
+    quicksandCrossed: false,
+    phaseTwoClosed: false,
+    rescuedNames: []
   };
 }
 
@@ -121,8 +239,48 @@ function normalize(value) {
   return value.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
+function leadershipDisplayName() {
+  const names = state.leadershipNames || [];
+  if (!names.length) return "Einsatzleitung";
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} und ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")} und ${names[names.length - 1]}`;
+}
+
+function currentCommanderIndex() {
+  if (!state.leadershipProfiles.length) return 0;
+  return completedStages() % state.leadershipProfiles.length;
+}
+
+function currentCommanderName() {
+  if (!state.leadershipProfiles.length) return "Einsatzleitung";
+  return state.leadershipProfiles[currentCommanderIndex()].name;
+}
+
+function generateLeadershipProfiles(names) {
+  return names.map((name, index) => ({
+    name,
+    age: 22 + Math.floor(Math.random() * 21),
+    job: LEADERSHIP_JOBS[index % LEADERSHIP_JOBS.length],
+    role: LEADERSHIP_ROLES[index % LEADERSHIP_ROLES.length]
+  }));
+}
+
 function healedTotal() {
   return (state.healed.aid || 0) + (state.healed.food || 0) + (state.healed.warmth || 0);
+}
+
+function totalPeople() {
+  if (state.passengerCount === null || state.crewCount === null) return null;
+  return state.passengerCount + state.crewCount;
+}
+
+function rescueTarget() {
+  return totalPeople() || 0;
+}
+
+function rescueComplete() {
+  return rescueTarget() > 0 && state.rescuedNames.length === rescueTarget();
 }
 
 function phaseOneDone() {
@@ -136,34 +294,42 @@ function nextCareStep() {
 function completedStages() {
   return [
     state.radioKitReady,
-    state.passengerCount !== null,
+    state.passengerCount !== null && state.crewCount !== null,
     phaseOneDone(),
     state.phaseOneAcknowledged,
     state.weatherAcknowledged,
     state.returnStarted,
     state.treesCleared,
     state.mailSolved,
-    state.riverCrossed
+    state.riverCrossed,
+    state.quicksandCrossed,
+    state.routeConfirmed,
+    state.phaseTwoClosed,
+    rescueComplete()
   ].filter(Boolean).length;
 }
 
 function progressPercent() {
-  return Math.round((completedStages() / 9) * 100);
+  return Math.round((completedStages() / 13) * 100);
 }
 
 function currentPhase() {
   if (!state.radioKitReady) return "storm";
-  if (state.passengerCount === null) return "supplies";
+  if (state.passengerCount === null || state.crewCount === null) return "supplies";
   if (!phaseOneDone()) return "radio";
   if (!state.phaseOneAcknowledged) return "radio";
   if (!state.weatherAcknowledged) return "radio";
   if (!state.returnStarted) return "border";
   if (!state.treesCleared) return "trees";
   if (!state.mailSolved) return "final";
-  return "arrival";
+  if (!state.riverCrossed) return "arrival";
+  if (!state.routeConfirmed) return "route";
+  if (!state.phaseTwoClosed) return "phase2close";
+  return "rescue";
 }
 
 function phaseLabel(phase) {
+  if (rescueComplete()) return "Mission abgeschlossen";
   switch (phase) {
     case "storm": return "Funkgeraet";
     case "supplies": return "Pilot";
@@ -174,18 +340,71 @@ function phaseLabel(phase) {
     case "border": return "Rueckweg-Karte";
     case "trees": return "Grenzfluss";
     case "final": return "Mail";
-    case "arrival": return state.riverCrossed ? "Grenzfluss ueberquert" : "Grenzfluss";
+    case "arrival": return state.riverCrossed ? "Bruecke ueberquert" : "Bruecke";
+    case "route": return "Heimweg";
+    case "phase2close": return "Phase 2 Ende";
+    case "rescue": return rescueComplete() ? "Alle zurueck" : "Gerettete erfassen";
     default: return "Warte";
   }
 }
 
 function updateVisibility() {
   lockScreen.classList.toggle("hidden", state.unlocked);
-  app.classList.toggle("hidden", !state.unlocked);
+  app.classList.toggle("hidden", !state.unlocked || !state.leadershipConfirmed);
+  prelockPanel.classList.toggle("hidden", prelockReady);
+  passwordForm.classList.toggle("hidden", !prelockReady);
+  leadershipPopup.classList.toggle("hidden", !state.unlocked || state.leadershipConfirmed);
+  leadershipProfiles.classList.toggle("hidden", !state.unlocked || !state.leadershipConfirmed);
   stormReminder.classList.toggle("hidden", !state.unlocked || !state.stormReminderVisible);
   carePopup.classList.toggle("hidden", !state.unlocked || state.activeCareStep === null);
   phaseOnePopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || state.phaseOneAcknowledged);
   weatherPopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || !state.phaseOneAcknowledged || state.weatherAcknowledged);
+  wildlifePopup.classList.toggle("hidden", !state.unlocked || !state.wildlifeAlerted || state.wildlifeBriefed);
+  wildlifeCipherPopup.classList.toggle("hidden", !state.unlocked || !state.wildlifeCipherOpen);
+  quicksandPopup.classList.toggle("hidden", !state.unlocked || !state.quicksandUnlocked || state.quicksandViewed);
+}
+
+function updateLeadershipUI() {
+  const address = leadershipDisplayName();
+  const commander = currentCommanderName();
+  heroAddress.textContent = address;
+  stormReminderText.textContent = `${address}, behaltet den Sturm mit dem zweiten Laptop im Blick. In Sturmnaehe faellt der Funk aus.`;
+  weatherPopupTextA.textContent = `${address}, bitte den Sicherheitsoffizier um einen zweiten Laptop und eine Einschulung.`;
+  weatherPopupTextB.textContent = `${address}, mit dem zweiten Laptop behaltet ihr den Sturm waehrend des Rueckwegs im Blick.`;
+  phaseOnePopupText.textContent = `${address}, alle GuSp wurden versorgt. Der Rueckweg kann jetzt vorbereitet werden.`;
+  leadershipCommandText.textContent = `Kommandofuehrung jetzt: ${commander}`;
+
+  leadershipProfilesList.innerHTML = "";
+  state.leadershipProfiles.forEach((profile, index) => {
+    const card = document.createElement("article");
+    card.className = "leadership-card";
+    if (index === currentCommanderIndex()) card.classList.add("is-command");
+
+    if (index === currentCommanderIndex()) {
+      const badge = document.createElement("span");
+      badge.className = "command-badge";
+      badge.textContent = "Kommandofuehrung";
+      card.appendChild(badge);
+    }
+
+    const title = document.createElement("h3");
+    title.textContent = profile.name;
+    card.appendChild(title);
+
+    const age = document.createElement("p");
+    age.textContent = `Alter: ${profile.age}`;
+    card.appendChild(age);
+
+    const job = document.createElement("p");
+    job.textContent = `Beruf: ${profile.job}`;
+    card.appendChild(job);
+
+    const role = document.createElement("p");
+    role.textContent = `Funktion: ${profile.role}`;
+    card.appendChild(role);
+
+    leadershipProfilesList.appendChild(card);
+  });
 }
 
 function updatePhaseCards() {
@@ -199,15 +418,18 @@ function updatePhaseCards() {
 function updateMissionStatus() {
   if (!state.unlocked) missionStatus.textContent = "Warte auf Zugriff";
   else if (!state.radioKitReady) missionStatus.textContent = "Funkgeraet holen";
-  else if (state.passengerCount === null) missionStatus.textContent = "Pilot befragen";
+  else if (state.passengerCount === null || state.crewCount === null) missionStatus.textContent = "Pilot befragen";
   else if (!phaseOneDone()) missionStatus.textContent = "Phase 1: Versorgung";
   else if (!state.phaseOneAcknowledged) missionStatus.textContent = "Phase 1 abgeschlossen";
   else if (!state.weatherAcknowledged) missionStatus.textContent = "Wetterwarnung";
   else if (!state.returnStarted) missionStatus.textContent = "Rueckweg-Karte";
   else if (!state.treesCleared) missionStatus.textContent = "Zum Grenzfluss leiten";
   else if (!state.mailSolved) missionStatus.textContent = "Mail entschluesseln";
-  else if (!state.riverCrossed) missionStatus.textContent = "Grenzfluss ueberqueren";
-  else missionStatus.textContent = "Teststand erreicht";
+  else if (!state.riverCrossed) missionStatus.textContent = "Bruecke ueberqueren";
+  else if (!state.routeConfirmed) missionStatus.textContent = "Heimweg Richtung Zivilisation";
+  else if (!state.phaseTwoClosed) missionStatus.textContent = "Phase 2 abschliessen";
+  else if (!rescueComplete()) missionStatus.textContent = "Gerettete erfassen";
+  else missionStatus.textContent = "Mission abgeschlossen";
 }
 
 function updateCarePopup() {
@@ -217,32 +439,39 @@ function updateCarePopup() {
     return;
   }
   carePopupTitle.textContent = step.title;
-  carePopupText.textContent = step.text;
+  carePopupText.textContent = `${currentCommanderName()}, ${step.text.charAt(0).toLowerCase()}${step.text.slice(1)}`;
   carePopupLabel.textContent = step.label;
   carePopupButton.textContent = `${step.title} bestaetigen`;
 }
 
 function updateStartTask() {
   stormState.textContent = state.radioKitReady ? "Abgeschlossen" : "Aktiv";
-  stormLog.textContent = state.radioKitReady ? "Funkgeraete uebernommen." : "Ohne Funkgeraet kein Kontakt.";
+  stormLog.textContent = state.radioKitReady
+    ? `${leadershipDisplayName()}, die Funkgeraete wurden uebernommen.`
+    : `${leadershipDisplayName()}, ohne Funkgeraet kein Kontakt.`;
   stormButton.disabled = state.radioKitReady;
 }
 
 function updatePassengerTask() {
-  suppliesState.textContent = state.passengerCount !== null ? "Abgeschlossen" : state.radioKitReady ? "Aktiv" : "Gesperrt";
-  pilotLog.textContent = state.passengerCount !== null ? `Pilot meldet: ${state.passengerCount} Passagiere.` : "Stelle zuerst Funkkontakt her.";
-  confirmPassengersButton.disabled = !state.radioKitReady || state.passengerCount !== null;
-  suppliesSuccess.textContent = state.passengerCount !== null ? `${state.passengerCount} Passagiere erfasst.` : "";
+  const countsReady = state.passengerCount !== null && state.crewCount !== null;
+  suppliesState.textContent = countsReady ? "Abgeschlossen" : state.radioKitReady ? "Aktiv" : "Gesperrt";
+  pilotLog.textContent = countsReady
+    ? `${leadershipDisplayName()}, der Pilot meldet: ${state.passengerCount} GuSp und ${state.crewCount} Besatzungsmitglieder.`
+    : `${leadershipDisplayName()}, stellt zuerst Funkkontakt her.`;
+  confirmPassengersButton.disabled = !state.radioKitReady || countsReady;
+  suppliesSuccess.textContent = countsReady ? `${state.passengerCount} GuSp und ${state.crewCount} Besatzungsmitglieder erfasst.` : "";
 }
 
 function updatePhaseOneTask() {
   radioState.textContent = phaseOneDone() ? "Abgeschlossen" : state.passengerCount !== null ? "Aktiv" : "Gesperrt";
   openCarePopupButton.disabled = state.passengerCount === null || phaseOneDone();
   if (phaseOneDone()) {
-    radioLog.textContent = `Phase 1 abgeschlossen. ${healedTotal()} Passagiere versorgt.`;
+    radioLog.textContent = `${leadershipDisplayName()}, Phase 1 abgeschlossen. ${healedTotal()} GuSp versorgt.`;
   } else if (state.passengerCount !== null) {
     const next = nextCareStep();
-    radioLog.textContent = next ? `Naechster Schritt: ${next.title}. Versorgt: ${healedTotal()} / ${state.passengerCount}` : `Versorgt: ${healedTotal()} / ${state.passengerCount}`;
+    radioLog.textContent = next
+      ? `${leadershipDisplayName()}, naechster Schritt: ${next.title}. Versorgt: ${healedTotal()} / ${state.passengerCount}`
+      : `${leadershipDisplayName()}, versorgt: ${healedTotal()} / ${state.passengerCount}`;
   } else {
     radioLog.textContent = "Versorgung noch nicht gestartet.";
   }
@@ -271,13 +500,95 @@ function updateFinalTask() {
 function updateArrivalTask() {
   returnState.textContent = state.riverCrossed ? "Abgeschlossen" : state.mailSolved ? "Aktiv" : "Gesperrt";
   returnButton.disabled = !state.mailSolved || state.riverCrossed;
-  returnLog.textContent = state.riverCrossed ? "Grenzfluss ueberquert." : "Die Passagiere warten auf die entschluesselte Mail.";
+  returnLog.textContent = state.riverCrossed ? "Bruecke ueber den Grenzfluss ueberquert." : "Die GuSp warten auf die entschluesselte Mail.";
+}
+
+function updateRouteTask() {
+  routeState.textContent = state.routeConfirmed ? "Abgeschlossen" : state.riverCrossed ? "Aktiv" : "Gesperrt";
+  quicksandButton.disabled = !state.riverCrossed || state.quicksandUnlocked;
+  quicksandButton.textContent = state.quicksandUnlocked ? "Treibsand gemeldet" : "Treibsand";
+  quicksandFollowup.classList.toggle("hidden", !state.quicksandUnlocked);
+  quicksandClearCheck.checked = state.quicksandCrossed;
+  routeButton.disabled = !state.riverCrossed || !state.quicksandViewed || !state.quicksandCrossed || state.routeConfirmed;
+  wildlifeButton.disabled = !state.riverCrossed || state.routeConfirmed;
+  wildlifeButton.textContent = "Wildtiersichtung";
+
+  if (state.routeConfirmed) {
+    routeLog.textContent = `${leadershipDisplayName()}, die GuSp und die Besatzung haben die Zivilisation erreicht.`;
+  } else if (state.quicksandCrossed) {
+    routeLog.textContent = "Treibsand erfolgreich ueberquert. Fuehrt die Gruppe weiter bis in die Zivilisation.";
+  } else if (state.quicksandUnlocked) {
+    routeLog.textContent = "Treibsand-Standort bekannt. Fuehrt die GuSp ueber die markierte trockene Route.";
+  } else {
+    routeLog.textContent = "Nach der Bruecke folgt ihr der vorgeschlagenen Route weiter Richtung Zivilisation.";
+  }
+}
+
+function updatePhaseTwoCloseTask() {
+  phaseTwoState.textContent = state.phaseTwoClosed ? "Abgeschlossen" : state.routeConfirmed ? "Aktiv" : "Gesperrt";
+  phaseTwoButton.disabled = !state.routeConfirmed || state.phaseTwoClosed;
+  phaseTwoLog.textContent = state.phaseTwoClosed
+    ? `${leadershipDisplayName()}, Phase 2 ist offiziell abgeschlossen.`
+    : `${leadershipDisplayName()}, bestaetigt jetzt den sicheren Heimweg aller GuSp und der Besatzung.`;
+}
+
+function updateRescueTask() {
+  const target = rescueTarget();
+  rescueState.textContent = rescueComplete() ? "Abgeschlossen" : state.phaseTwoClosed ? "Aktiv" : "Gesperrt";
+  rescueNameButton.disabled = !state.phaseTwoClosed || rescueComplete();
+  rescueNameInput.disabled = !state.phaseTwoClosed || rescueComplete();
+  rescueLog.textContent = state.phaseTwoClosed
+    ? `GuSp: ${state.passengerCount}, Besatzung: ${state.crewCount}, gesamt zurueckzubringen: ${target}. Eingetragen: ${state.rescuedNames.length} von ${target}.`
+    : "Phase 2 muss zuerst abgeschlossen werden.";
+
+  rescuedNamesList.innerHTML = "";
+  state.rescuedNames.forEach((name, index) => {
+    const tag = document.createElement("span");
+    tag.className = "rescued-name-chip";
+    tag.textContent = `${index + 1}. ${name}`;
+    rescuedNamesList.appendChild(tag);
+  });
+
+  missionCompleteCard.classList.toggle("hidden", !rescueComplete());
+  if (rescueComplete()) {
+    missionCompleteText.textContent = `Gratulation ${leadershipDisplayName()}, die Mission ist erfolgreich abgeschlossen. Gute Besserung an alle Geretteten.`;
+  }
+}
+
+function updateWildlifePopup() {
+  if (state.wildlifePhoneUnlocked && state.wildlifeContactConfirmed && state.wildlifeDangerCleared) {
+    wildlifePuzzleLog.textContent = "Wildtieraufsicht kontaktiert. Keine Gefahr mehr durch Wildtier.";
+  } else if (state.wildlifePhoneUnlocked) {
+    wildlifePuzzleLog.textContent = `Telefonnummer entschluesselt: ${WILDLIFE_PHONE}`;
+  } else {
+    wildlifePuzzleLog.textContent = "Die Telefonnummer ist noch verschluesselt.";
+  }
+
+  wildlifeDecryptButton.disabled = state.wildlifePhoneUnlocked;
+  wildlifeDecryptButton.textContent = state.wildlifePhoneUnlocked
+    ? "Einsatzlogbuch entschluesselt"
+    : "Entschluesselung des Einsatzlogbuches";
+  wildlifeContactCard.classList.toggle("hidden", !state.wildlifePhoneUnlocked);
+  wildlifeFollowup.classList.toggle("hidden", !state.wildlifePhoneUnlocked);
+  wildlifeContactCheck.checked = state.wildlifeContactConfirmed;
+  wildlifeClearCheck.checked = state.wildlifeDangerCleared;
+}
+
+function updateWildlifeCipherPopup() {
+  const step = WILDLIFE_DIGITS[state.wildlifeDigitIndex];
+  if (!step) return;
+
+  wildlifeCipherTitle.textContent = `${step.title} von ${WILDLIFE_DIGITS.length}`;
+  wildlifeCipherText.textContent = step.clue;
+  wildlifeCipherAttempts.textContent = `Verbleibende Versuche: ${state.wildlifeDigitAttemptsLeft}`;
+  wildlifeCipherAttempts.className = "task-feedback";
+  wildlifeCipherButton.textContent = `Ziffer ${state.wildlifeDigitIndex + 1} pruefen`;
 }
 
 function render() {
-  totalPassengers.textContent = state.passengerCount === null ? "Unbekannt" : `${state.passengerCount}`;
+  totalPassengers.textContent = totalPeople() === null ? "Unbekannt" : `${totalPeople()}`;
   suppliedPassengers.textContent = `${healedTotal()}`;
-  returningPassengers.textContent = state.riverCrossed && state.passengerCount !== null ? `${state.passengerCount}` : "0";
+  returningPassengers.textContent = state.phaseTwoClosed ? `${state.rescuedNames.length}` : "0";
   progressLabel.textContent = `${progressPercent()}%`;
   progressFill.style.width = `${progressPercent()}%`;
 
@@ -292,6 +603,12 @@ function render() {
   updateTreesTask();
   updateFinalTask();
   updateArrivalTask();
+  updateRouteTask();
+  updatePhaseTwoCloseTask();
+  updateRescueTask();
+  updateWildlifePopup();
+  updateWildlifeCipherPopup();
+  updateLeadershipUI();
   updateCarePopup();
   updateVisibility();
 }
@@ -309,6 +626,33 @@ passwordForm.addEventListener("submit", (event) => {
   render();
 });
 
+leadershipForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const names = leadershipInput.value
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  if (!names.length) {
+    leadershipFeedback.textContent = "Bitte mindestens einen Namen eintragen.";
+    leadershipFeedback.className = "task-feedback error";
+    return;
+  }
+
+  if (names.length > 5) {
+    leadershipFeedback.textContent = "Bitte hoechstens 5 Namen eintragen.";
+    leadershipFeedback.className = "task-feedback error";
+    return;
+  }
+
+  state.leadershipNames = names;
+  state.leadershipProfiles = generateLeadershipProfiles(names);
+  state.leadershipConfirmed = true;
+  leadershipFeedback.textContent = "";
+  saveState();
+  render();
+});
+
 stormButton.addEventListener("click", () => {
   state.radioKitReady = true;
   stormFeedback.textContent = "Funkgeraete erhalten.";
@@ -320,13 +664,15 @@ stormButton.addEventListener("click", () => {
 passengerForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const count = Number.parseInt(passengerInput.value, 10);
-  if (!Number.isInteger(count) || count <= 0) {
-    suppliesFeedback.textContent = "Ungueltige Zahl.";
+  const crew = Number.parseInt(crewInput.value, 10);
+  if (!Number.isInteger(count) || count <= 0 || !Number.isInteger(crew) || crew <= 0) {
+    suppliesFeedback.textContent = "Bitte fuer GuSp und Besatzung gueltige Zahlen eintragen.";
     suppliesFeedback.className = "task-feedback error";
     return;
   }
   state.passengerCount = count;
-  suppliesFeedback.textContent = "Passagierzahl bestaetigt.";
+  state.crewCount = crew;
+  suppliesFeedback.textContent = "Anzahl der GuSp und der Besatzung bestaetigt.";
   suppliesFeedback.className = "task-feedback success";
   saveState();
   render();
@@ -416,13 +762,21 @@ borderForm.addEventListener("submit", (event) => {
 
 treesButton.addEventListener("click", () => {
   state.treesCleared = true;
-  treesFeedback.textContent = "Passagiere zum Grenzfluss geleitet.";
+  treesFeedback.textContent = "GuSp zum Grenzfluss geleitet.";
   treesFeedback.className = "task-feedback success";
   saveState();
   render();
 });
 
-finalButton.addEventListener("click", () => {
+finalForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const answer = normalize(finalAnswerInput.value);
+  const expected = normalize(MORSE_EMAIL_PLAIN);
+  if (answer !== expected) {
+    finalFeedback.textContent = "Falsche Entschluesselung.";
+    finalFeedback.className = "task-feedback error";
+    return;
+  }
   state.mailSolved = true;
   finalFeedback.textContent = "Nachricht weitergegeben.";
   finalFeedback.className = "task-feedback success";
@@ -432,8 +786,182 @@ finalButton.addEventListener("click", () => {
 
 returnButton.addEventListener("click", () => {
   state.riverCrossed = true;
-  returnFeedback.textContent = "Grenzfluss ueberquert.";
+  returnFeedback.textContent = "Bruecke ueber den Grenzfluss ueberquert.";
   returnFeedback.className = "task-feedback success";
+  saveState();
+  render();
+});
+
+wildlifeButton.addEventListener("click", () => {
+  state.wildlifeAlerted = true;
+  state.wildlifeBriefed = false;
+  routeFeedback.textContent = "Wildtiersichtung gemeldet. Neue Anweisung geoeffnet.";
+  routeFeedback.className = "task-feedback error";
+  saveState();
+  render();
+});
+
+quicksandButton.addEventListener("click", () => {
+  state.quicksandUnlocked = true;
+  state.quicksandViewed = false;
+  routeFeedback.textContent = "Treibsand gemeldet. Standortkarte geoeffnet.";
+  routeFeedback.className = "task-feedback success";
+  saveState();
+  render();
+});
+
+quicksandPopupButton.addEventListener("click", () => {
+  state.quicksandViewed = true;
+  saveState();
+  render();
+});
+
+quicksandClearCheck.addEventListener("change", () => {
+  state.quicksandCrossed = quicksandClearCheck.checked;
+  routeFeedback.textContent = state.quicksandCrossed
+    ? "Treibsand erfolgreich ueberquert."
+    : "Treibsand muss noch bestaetigt werden.";
+  routeFeedback.className = state.quicksandCrossed ? "task-feedback success" : "task-feedback";
+  saveState();
+  render();
+});
+
+wildlifePopupButton.addEventListener("click", () => {
+  state.wildlifeBriefed = true;
+  saveState();
+  render();
+});
+
+wildlifeContactCheck.addEventListener("change", () => {
+  state.wildlifeContactConfirmed = wildlifeContactCheck.checked;
+  saveState();
+  render();
+});
+
+wildlifeClearCheck.addEventListener("change", () => {
+  state.wildlifeDangerCleared = wildlifeClearCheck.checked;
+  saveState();
+  render();
+});
+
+wildlifeDecryptButton.addEventListener("click", () => {
+  state.wildlifeCipherOpen = true;
+  state.wildlifeDigitIndex = 0;
+  state.wildlifeDigitAttemptsLeft = 3;
+  wildlifeCipherInput.value = "";
+  wildlifeCipherFeedback.textContent = "";
+  wildlifeCipherAttempts.textContent = "";
+  saveState();
+  render();
+});
+
+wildlifeCipherForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const step = WILDLIFE_DIGITS[state.wildlifeDigitIndex];
+  if (!step) return;
+
+  const answer = String(Number.parseInt(wildlifeCipherInput.value, 10));
+  if (answer === step.answer) {
+    if (state.wildlifeDigitIndex === WILDLIFE_DIGITS.length - 1) {
+      state.wildlifePhoneUnlocked = true;
+      state.wildlifeCipherOpen = false;
+      wildlifeCipherFeedback.textContent = "";
+      routeFeedback.textContent = "Telefonnummer der Wildtieraufsicht entschluesselt.";
+      routeFeedback.className = "task-feedback success";
+    } else {
+      state.wildlifeDigitIndex += 1;
+      state.wildlifeDigitAttemptsLeft = 3;
+      wildlifeCipherInput.value = "";
+      wildlifeCipherFeedback.textContent = `Richtig. ${WILDLIFE_DIGITS[state.wildlifeDigitIndex].title} wird geoeffnet.`;
+      wildlifeCipherFeedback.className = "task-feedback success";
+      saveState();
+      render();
+      return;
+    }
+  } else {
+    state.wildlifeDigitAttemptsLeft -= 1;
+
+    if (state.wildlifeDigitAttemptsLeft <= 0) {
+      state.wildlifeDigitIndex = 0;
+      state.wildlifeDigitAttemptsLeft = 3;
+      wildlifeCipherInput.value = "";
+      wildlifeCipherFeedback.textContent = "Drei Versuche verbraucht. Das Einsatzlogbuch startet wieder bei Ziffer 1.";
+      wildlifeCipherFeedback.className = "task-feedback error";
+      saveState();
+      render();
+      return;
+    }
+
+    wildlifeCipherFeedback.textContent = `Falsch. Noch ${state.wildlifeDigitAttemptsLeft} Versuch(e) fuer diese Ziffer.`;
+    wildlifeCipherFeedback.className = "task-feedback error";
+    wildlifeCipherInput.value = "";
+    saveState();
+    render();
+    return;
+  }
+
+  wildlifeCipherInput.value = "";
+  saveState();
+  render();
+});
+
+routeButton.addEventListener("click", () => {
+  state.routeConfirmed = true;
+  routeFeedback.textContent = "Zivilisation erreicht. Der Rueckweg ist geschafft.";
+  routeFeedback.className = "task-feedback success";
+  saveState();
+  render();
+});
+
+phaseTwoButton.addEventListener("click", () => {
+  state.phaseTwoClosed = true;
+  phaseTwoFeedback.textContent = "Phase 2 abgeschlossen.";
+  phaseTwoFeedback.className = "task-feedback success";
+  saveState();
+  render();
+});
+
+rescueForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (!state.phaseTwoClosed) {
+    rescueFeedback.textContent = "Phase 2 muss zuerst abgeschlossen werden.";
+    rescueFeedback.className = "task-feedback error";
+    return;
+  }
+
+  const name = rescueNameInput.value.trim();
+  const normalizedName = normalize(name);
+  if (!name) {
+    rescueFeedback.textContent = "Bitte einen Vornamen eintragen.";
+    rescueFeedback.className = "task-feedback error";
+    return;
+  }
+
+  if (state.rescuedNames.some((entry) => normalize(entry) === normalizedName)) {
+    rescueFeedback.textContent = "Dieser Vorname wurde bereits eingetragen.";
+    rescueFeedback.className = "task-feedback error";
+    return;
+  }
+
+  if (state.rescuedNames.length >= rescueTarget()) {
+    rescueFeedback.textContent = "Alle Geretteten sind bereits eingetragen.";
+    rescueFeedback.className = "task-feedback success";
+    return;
+  }
+
+  state.rescuedNames.push(name);
+  rescueNameInput.value = "";
+
+  if (rescueComplete()) {
+    rescueFeedback.textContent = "Alle GuSp und Besatzungsmitglieder sind erfasst.";
+    rescueFeedback.className = "task-feedback success";
+  } else {
+    rescueFeedback.textContent = `${state.rescuedNames.length} von ${rescueTarget()} Geretteten eingetragen.`;
+    rescueFeedback.className = "task-feedback success";
+  }
+
   saveState();
   render();
 });
@@ -441,13 +969,19 @@ returnButton.addEventListener("click", () => {
 resetButton.addEventListener("click", () => {
   localStorage.removeItem(STORAGE_KEY);
   Object.assign(state, defaultState());
+  prelockReady = false;
 
   passwordInput.value = "";
+  leadershipInput.value = "";
   passengerInput.value = "";
+  crewInput.value = "";
   borderAnswerInput.value = "";
+  finalAnswerInput.value = "";
   carePopupInput.value = "";
+  rescueNameInput.value = "";
 
   passwordFeedback.textContent = "";
+  leadershipFeedback.textContent = "";
   stormFeedback.textContent = "";
   suppliesFeedback.textContent = "";
   suppliesSuccess.textContent = "";
@@ -456,9 +990,21 @@ resetButton.addEventListener("click", () => {
   treesFeedback.textContent = "";
   finalFeedback.textContent = "";
   returnFeedback.textContent = "";
+  routeFeedback.textContent = "";
+  phaseTwoFeedback.textContent = "";
+  rescueFeedback.textContent = "";
   carePopupFeedback.textContent = "";
+  wildlifeCipherFeedback.textContent = "";
+  wildlifeCipherAttempts.textContent = "";
 
   render();
 });
 
 render();
+
+prelockButton.addEventListener("click", () => {
+  prelockReady = true;
+  passwordFeedback.textContent = "Winkelschrift geprüft. Passwortfeld freigeschaltet.";
+  passwordFeedback.className = "task-feedback success";
+  render();
+});
