@@ -1116,3 +1116,31 @@ if (prologueStage) {
     }
   });
 }
+
+document.querySelectorAll(".overlay-close").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const overlay = btn.closest(".overlay-screen");
+    if (!overlay) return;
+
+    overlay.classList.add("hidden");
+
+    if (overlay.id === "carePopup") {
+      state.activeCareStep = null;
+    }
+
+    if (overlay.id === "wildlifeCipherPopup") {
+      state.wildlifeCipherOpen = false;
+    }
+
+    if (overlay.id === "quicksandPopup") {
+      state.quicksandViewed = true;
+    }
+
+    if (overlay.id === "wildlifePopup") {
+      state.wildlifeBriefed = true;
+    }
+
+    saveState();
+    render();
+  });
+});
