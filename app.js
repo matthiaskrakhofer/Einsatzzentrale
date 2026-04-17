@@ -2,7 +2,8 @@ const PASSWORD = "roterpanda13";
 const STORAGE_KEY = "einsatzleitungszentrale-v12";
 const MORSE_EMAIL_PLAIN = "Erzaehle dem Waechter folgenden Witz: Faehrt ein Panda ueber die Strasse - BamBus";
 const MORSE_EMAIL_CODE = ". .-. --.. .- . .... .-.. . / -.. . -- / .-- .- . -.-. .... - . .-. / ..-. --- .-.. --. . -. -.. . -. / .-- .. - --.. ---... / ..-. .- . .... .-. - / . .. -. / .--. .- -. -.. .- / ..- . -... . .-. / -.. .. . / ... - .-. .- ... ... . / -....- / -... .- -- -... ..- ...";
-const WILDLIFE_PHONE = "06702096205";
+const WILDLIFE_PHONE = "06702069205";
+const WILDLIFE_PHONE_DISPLAY = "06702069205";
 const WILDLIFE_DIGITS = [
   { title: "1. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
   { title: "2. Ziffer", clue: "Anzahl der Todsuenden minus 1", answer: "6" },
@@ -10,8 +11,8 @@ const WILDLIFE_DIGITS = [
   { title: "4. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
   { title: "5. Ziffer", clue: "Anzahl der Finger einer Hand minus 3", answer: "2" },
   { title: "6. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
-  { title: "7. Ziffer", clue: "Anzahl der Katzenleben laut Mythos", answer: "9" },
-  { title: "8. Ziffer", clue: "Anzahl der Zwerge minus 1", answer: "6" },
+  { title: "7. Ziffer", clue: "Anzahl der Seiten eines Wuerfels", answer: "6" },
+  { title: "8. Ziffer", clue: "Anzahl der Katzenleben laut Mythos", answer: "9" },
   { title: "9. Ziffer", clue: "Anzahl der Katzenleben minus 7", answer: "2" },
   { title: "10. Ziffer", clue: "Die kleinste gerade Zahl", answer: "0" },
   { title: "11. Ziffer", clue: "Anzahl der Finger einer Hand", answer: "5" }
@@ -85,6 +86,7 @@ const wildlifePopup = document.getElementById("wildlifePopup");
 const wildlifePuzzleLog = document.getElementById("wildlifePuzzleLog");
 const wildlifeDecryptButton = document.getElementById("wildlifeDecryptButton");
 const wildlifeContactCard = document.getElementById("wildlifeContactCard");
+const wildlifePhoneText = document.getElementById("wildlifePhoneText");
 const wildlifeFollowup = document.getElementById("wildlifeFollowup");
 const wildlifeContactCheck = document.getElementById("wildlifeContactCheck");
 const wildlifeClearCheck = document.getElementById("wildlifeClearCheck");
@@ -152,7 +154,6 @@ const treesFeedback = document.getElementById("treesFeedback");
 
 const finalState = document.getElementById("finalState");
 const finalLog = document.getElementById("finalLog");
-const finalForm = document.getElementById("finalForm");
 const finalButton = document.getElementById("finalButton");
 const finalFeedback = document.getElementById("finalFeedback");
 
@@ -184,6 +185,12 @@ const rescueFeedback = document.getElementById("rescueFeedback");
 const rescuedNamesList = document.getElementById("rescuedNamesList");
 const missionCompleteCard = document.getElementById("missionCompleteCard");
 const missionCompleteText = document.getElementById("missionCompleteText");
+const completionScreen = document.getElementById("completionScreen");
+const completionLeadText = document.getElementById("completionLeadText");
+const completionTimerValue = document.getElementById("completionTimerValue");
+const completionRescueValue = document.getElementById("completionRescueValue");
+const completionNamesList = document.getElementById("completionNamesList");
+const completionResetButton = document.getElementById("completionResetButton");
 
 const resetButton = document.getElementById("resetButton");
 let prelockReady = false;
@@ -292,6 +299,14 @@ function rescueComplete() {
   return rescueTarget() > 0 && state.rescuedNames.length === rescueTarget();
 }
 
+function wildlifeResolved() {
+  return !state.wildlifeAlerted || (
+    state.wildlifePhoneUnlocked &&
+    state.wildlifeContactConfirmed &&
+    state.wildlifeDangerCleared
+  );
+}
+
 function formatElapsedTime(ms) {
   const safeMs = Math.max(0, ms);
   const totalHundredths = Math.floor(safeMs / 10);
@@ -382,6 +397,7 @@ function completedStages() {
     state.treesCleared,
     state.mailSolved,
     state.riverCrossed,
+    state.wildlifeAlerted && wildlifeResolved(),
     state.quicksandCrossed,
     state.routeConfirmed,
     state.phaseTwoClosed,
@@ -390,7 +406,8 @@ function completedStages() {
 }
 
 function progressPercent() {
-  return Math.round((completedStages() / 13) * 100);
+  const targetStages = 13 + (state.wildlifeAlerted ? 1 : 0);
+  return Math.round((completedStages() / targetStages) * 100);
 }
 
 function currentPhase() {
@@ -436,6 +453,7 @@ function updateVisibility() {
   leadershipPopup.classList.toggle("hidden", !state.unlocked || state.leadershipConfirmed);
   leadershipProfiles.classList.toggle("hidden", !state.unlocked || !state.leadershipConfirmed);
   stormReminder.classList.toggle("hidden", !state.unlocked || !state.stormReminderVisible);
+  completionScreen.classList.toggle("hidden", !state.unlocked || !rescueComplete());
   carePopup.classList.toggle("hidden", !state.unlocked || state.activeCareStep === null);
   phaseOnePopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || state.phaseOneAcknowledged);
   weatherPopup.classList.toggle("hidden", !state.unlocked || !phaseOneDone() || !state.phaseOneAcknowledged || state.weatherAcknowledged);
@@ -448,11 +466,18 @@ function updateLeadershipUI() {
   const address = leadershipDisplayName();
   const commander = currentCommanderName();
   heroAddress.textContent = address;
-  stormReminderText.textContent = `${address}, behaltet den Sturm mit dem zweiten Laptop im Blick. In Sturmnaehe faellt der Funk aus.`;
+  stormReminderText.textContent = "Sturm im Blick. Funk aus bei Naehe.";
   weatherPopupTextA.textContent = `${address}, bitte den Sicherheitsoffizier um einen zweiten Laptop und eine Einschulung.`;
   weatherPopupTextB.textContent = `${address}, mit dem zweiten Laptop behaltet ihr den Sturm waehrend des Rueckwegs im Blick.`;
   phaseOnePopupText.textContent = `${address}, alle GuSp wurden versorgt. Der Rueckweg kann jetzt vorbereitet werden.`;
-  leadershipCommandText.textContent = `Kommandofuehrung jetzt: ${commander}`;
+  leadershipCommandText.replaceChildren();
+  const commandLabel = document.createElement("span");
+  commandLabel.className = "leadership-command-label";
+  commandLabel.textContent = "Aktuell in Fuehrung";
+  const commandName = document.createElement("strong");
+  commandName.className = "leadership-command-name";
+  commandName.textContent = commander;
+  leadershipCommandText.append(commandLabel, commandName);
 
   leadershipProfilesList.innerHTML = "";
   state.leadershipProfiles.forEach((profile, index) => {
@@ -490,7 +515,9 @@ function updateLeadershipUI() {
 function updatePhaseCards() {
   const activePhase = currentPhase();
   phaseCards.forEach((card) => {
-    card.classList.toggle("hidden", card.dataset.phase !== activePhase);
+    const isActive = card.dataset.phase === activePhase;
+    card.classList.toggle("hidden", !isActive);
+    card.classList.toggle("active-task", isActive);
   });
   phaseStatus.textContent = phaseLabel(activePhase);
 }
@@ -589,12 +616,14 @@ function updateRouteTask() {
   quicksandButton.textContent = state.quicksandUnlocked ? "Treibsand gemeldet" : "Treibsand";
   quicksandFollowup.classList.toggle("hidden", !state.quicksandUnlocked);
   quicksandClearCheck.checked = state.quicksandCrossed;
-  routeButton.disabled = !state.riverCrossed || !state.quicksandViewed || !state.quicksandCrossed || state.routeConfirmed;
+  routeButton.disabled = !state.riverCrossed || !state.quicksandViewed || !state.quicksandCrossed || !wildlifeResolved() || state.routeConfirmed;
   wildlifeButton.disabled = !state.riverCrossed || state.routeConfirmed;
   wildlifeButton.textContent = "Wildtiersichtung";
 
   if (state.routeConfirmed) {
     routeLog.textContent = `${leadershipDisplayName()}, die GuSp und die Besatzung haben die Zivilisation erreicht.`;
+  } else if (state.wildlifeAlerted && !wildlifeResolved()) {
+    routeLog.textContent = "Wildtiersichtung offen. Erst Wildtieraufsicht kontaktieren und Gefahr beenden, dann weiter Richtung Zivilisation.";
   } else if (state.quicksandCrossed) {
     routeLog.textContent = "Treibsand erfolgreich ueberquert. Fuehrt die Gruppe weiter bis in die Zivilisation.";
   } else if (state.quicksandUnlocked) {
@@ -636,10 +665,11 @@ function updateRescueTask() {
 }
 
 function updateWildlifePopup() {
+  wildlifePhoneText.textContent = WILDLIFE_PHONE_DISPLAY;
   if (state.wildlifePhoneUnlocked && state.wildlifeContactConfirmed && state.wildlifeDangerCleared) {
     wildlifePuzzleLog.textContent = "Wildtieraufsicht kontaktiert. Keine Gefahr mehr durch Wildtier.";
   } else if (state.wildlifePhoneUnlocked) {
-    wildlifePuzzleLog.textContent = `Telefonnummer entschluesselt: ${WILDLIFE_PHONE}`;
+    wildlifePuzzleLog.textContent = `Telefonnummer entschluesselt: ${WILDLIFE_PHONE_DISPLAY}`;
   } else {
     wildlifePuzzleLog.textContent = "Die Telefonnummer ist noch verschluesselt.";
   }
@@ -652,6 +682,19 @@ function updateWildlifePopup() {
   wildlifeFollowup.classList.toggle("hidden", !state.wildlifePhoneUnlocked);
   wildlifeContactCheck.checked = state.wildlifeContactConfirmed;
   wildlifeClearCheck.checked = state.wildlifeDangerCleared;
+}
+
+function updateCompletionScreen() {
+  completionTimerValue.textContent = formatElapsedTime(currentElapsedMs());
+  completionRescueValue.textContent = `${state.rescuedNames.length}`;
+  completionLeadText.textContent = `Gratulation ${leadershipDisplayName()}, eure Mission war erfolgreich. Gute Besserung an alle Geretteten.`;
+  completionNamesList.innerHTML = "";
+  state.rescuedNames.forEach((name, index) => {
+    const tag = document.createElement("span");
+    tag.className = "rescued-name-chip";
+    tag.textContent = `${index + 1}. ${name}`;
+    completionNamesList.appendChild(tag);
+  });
 }
 
 function updateWildlifeCipherPopup() {
@@ -688,10 +731,44 @@ function render() {
   updateRescueTask();
   updateWildlifePopup();
   updateWildlifeCipherPopup();
+  updateCompletionScreen();
   updateLeadershipUI();
   updateCarePopup();
   updateVisibility();
   syncMissionTimer();
+}
+
+function resetMission() {
+  localStorage.removeItem(STORAGE_KEY);
+  Object.assign(state, defaultState());
+  prelockReady = false;
+
+  passwordInput.value = "";
+  leadershipInput.value = "";
+  passengerInput.value = "";
+  crewInput.value = "";
+  borderAnswerInput.value = "";
+  carePopupInput.value = "";
+  rescueNameInput.value = "";
+
+  passwordFeedback.textContent = "";
+  leadershipFeedback.textContent = "";
+  stormFeedback.textContent = "";
+  suppliesFeedback.textContent = "";
+  suppliesSuccess.textContent = "";
+  radioFeedback.textContent = "";
+  borderFeedback.textContent = "";
+  treesFeedback.textContent = "";
+  finalFeedback.textContent = "";
+  returnFeedback.textContent = "";
+  routeFeedback.textContent = "";
+  phaseTwoFeedback.textContent = "";
+  rescueFeedback.textContent = "";
+  carePopupFeedback.textContent = "";
+  wildlifeCipherFeedback.textContent = "";
+  wildlifeCipherAttempts.textContent = "";
+
+  render();
 }
 
 passwordForm.addEventListener("submit", (event) => {
@@ -1041,39 +1118,8 @@ rescueForm.addEventListener("submit", (event) => {
   render();
 });
 
-resetButton.addEventListener("click", () => {
-  localStorage.removeItem(STORAGE_KEY);
-  Object.assign(state, defaultState());
-  prelockReady = false;
-
-  passwordInput.value = "";
-  leadershipInput.value = "";
-  passengerInput.value = "";
-  crewInput.value = "";
-  borderAnswerInput.value = "";
-  finalAnswerInput.value = "";
-  carePopupInput.value = "";
-  rescueNameInput.value = "";
-
-  passwordFeedback.textContent = "";
-  leadershipFeedback.textContent = "";
-  stormFeedback.textContent = "";
-  suppliesFeedback.textContent = "";
-  suppliesSuccess.textContent = "";
-  radioFeedback.textContent = "";
-  borderFeedback.textContent = "";
-  treesFeedback.textContent = "";
-  finalFeedback.textContent = "";
-  returnFeedback.textContent = "";
-  routeFeedback.textContent = "";
-  phaseTwoFeedback.textContent = "";
-  rescueFeedback.textContent = "";
-  carePopupFeedback.textContent = "";
-  wildlifeCipherFeedback.textContent = "";
-  wildlifeCipherAttempts.textContent = "";
-
-  render();
-});
+resetButton.addEventListener("click", resetMission);
+completionResetButton.addEventListener("click", resetMission);
 
 render();
 updatePrologueUI();

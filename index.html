@@ -154,7 +154,7 @@
         <div class="contact-copy">
           <p class="contact-role">Wildtieraufsicht Nord</p>
           <h3>Direktkontakt Einsatz</h3>
-          <p class="contact-phone">0670 209 6205</p>
+          <p id="wildlifePhoneText" class="contact-phone">06702069205</p>
           <p class="contact-note">Wildtiersichtung melden, Standort nennen und auf weitere Anweisung warten.</p>
         </div>
       </article>
@@ -208,19 +208,13 @@
       <p class="overlay-text">
         Die GuSp stehen vor einem Treibsandfeld. Der Pilot erkennt die Gefahr rechtzeitig. Jetzt muessen sie den Bereich mit Treibsand-Brettern ueberqueren, die nur in begrenzter Anzahl vorhanden sind.
       </p>
-     <article class="location-card">
-  <img
-    class="location-map"
-    src="assets/treibsand-standort.svg"
-    alt="Symbolbild fuer Treibsandfeld"
-  >
-  <div class="location-copy">
-    <strong>Treibsand ueberqueren</strong>
-    <p>Der Pilot stoppt die Gruppe rechtzeitig vor dem Treibsandfeld.</p>
-    <p>Die GuSp muessen den Bereich mithilfe von Treibsand-Brettern ueberqueren.</p>
-    <p>Die Anzahl der Bretter ist begrenzt. Plant die Ueberquerung sorgfaeltig.</p>
-  </div>
-</article>
+      <figure class="quicksand-symbol">
+        <img
+          class="location-map"
+          src="assets/treibsand-standort.svg"
+          alt="Symbolbild fuer Treibsandfeld"
+        >
+      </figure>
       <button id="quicksandPopupButton" type="button" class="solve-button">Treibsand-Hinweis verstanden</button>
     </section>
   </div>
@@ -242,21 +236,21 @@
       <strong>Einsatzleitung</strong>
       <p id="leadershipCommandText" class="leadership-command-text">Kommandofuehrung wird zugewiesen.</p>
       <div id="leadershipProfilesList" class="leadership-profiles-list"></div>
-    </aside>
 
-    <aside id="stormReminder" class="storm-reminder hidden">
-      <strong>Sturmwarnung</strong>
-      <div class="storm-radar-row">
-        <div class="weather-radar small-radar" aria-hidden="true">
-          <span class="radar-ring radar-ring-one"></span>
-          <span class="radar-ring radar-ring-two"></span>
-          <span class="radar-sweep"></span>
-          <span class="radar-blip radar-blip-one"></span>
-          <span class="radar-blip radar-blip-two"></span>
+      <section id="stormReminder" class="storm-reminder hidden" aria-label="Sturmwarnung">
+        <strong>Sturm</strong>
+        <div class="storm-radar-row">
+          <div class="weather-radar small-radar" aria-hidden="true">
+            <span class="radar-ring radar-ring-one"></span>
+            <span class="radar-ring radar-ring-two"></span>
+            <span class="radar-sweep"></span>
+            <span class="radar-blip radar-blip-one"></span>
+            <span class="radar-blip radar-blip-two"></span>
+          </div>
+          <span class="storm-radar-label">Radar aktiv</span>
         </div>
-        <span class="storm-radar-label">Radar aktiv</span>
-      </div>
-      <p id="stormReminderText">Sturm mit dem zweiten Laptop im Blick behalten. In Sturmnaehe faellt der Funk aus.</p>
+        <p id="stormReminderText">Sturm im Blick. Funk aus bei Naehe.</p>
+      </section>
     </aside>
 
     <section class="hero">
@@ -643,6 +637,33 @@
       </div>
     </section>
   </main>
+
+  <div id="completionScreen" class="overlay-screen completion-screen hidden">
+    <section class="overlay-panel completion-panel">
+      <div class="completion-burst completion-burst-a" aria-hidden="true"></div>
+      <div class="completion-burst completion-burst-b" aria-hidden="true"></div>
+      <p class="eyebrow">Mission abgeschlossen</p>
+      <h2>Einsatz erfolgreich beendet</h2>
+      <p id="completionLeadText" class="overlay-text">
+        Alle GuSp und Besatzungsmitglieder sind sicher zurueck in der Zivilisation.
+      </p>
+      <div class="completion-stats">
+        <div class="completion-stat">
+          <span>Timer</span>
+          <strong id="completionTimerValue">00:00:00.00</strong>
+        </div>
+        <div class="completion-stat">
+          <span>Gerettete</span>
+          <strong id="completionRescueValue">0</strong>
+        </div>
+      </div>
+      <div class="completion-chip-block">
+        <strong>Gerettete Namen</strong>
+        <div id="completionNamesList" class="rescued-names-list"></div>
+      </div>
+      <button id="completionResetButton" type="button" class="solve-button">Neue Mission starten</button>
+    </section>
+  </div>
 
   <script src="app.js"></script>
 </body>
